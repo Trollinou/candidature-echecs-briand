@@ -27,41 +27,19 @@ class Identity {
 		$classe = get_post_meta( $post->ID, '_ceb_eleve_classe', true );
 		$lv1    = get_post_meta( $post->ID, '_ceb_eleve_lv1', true );
 		$lv2    = get_post_meta( $post->ID, '_ceb_eleve_lv2', true );
+
+		$ddn_formattee = $ddn ? wp_date( 'd/m/Y', strtotime( $ddn ) ) : '';
 		?>
-		<table class="form-table">
-			<tr>
-				<th><strong>Nom :</strong></th>
-				<td><?php echo esc_html( $nom ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Prénom :</strong></th>
-				<td><?php echo esc_html( $prenom ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Date de naissance :</strong></th>
-				<td><?php echo esc_html( $ddn ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Sexe :</strong></th>
-				<td><?php echo esc_html( $sexe ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Établissement actuel :</strong></th>
-				<td><?php echo esc_html( $ecole ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Classe :</strong></th>
-				<td><?php echo esc_html( $classe ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>LV1 :</strong></th>
-				<td><?php echo esc_html( $lv1 ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>LV2 :</strong></th>
-				<td><?php echo esc_html( $lv2 ); ?></td>
-			</tr>
-		</table>
+		<div class="ceb-metabox-content">
+			<p style="margin: 4px 0;"><strong>Nom :</strong> <?php echo esc_html( $nom ); ?></p>
+			<p style="margin: 4px 0;"><strong>Prénom :</strong> <?php echo esc_html( $prenom ); ?></p>
+			<p style="margin: 4px 0;"><strong>Date de naissance :</strong> <?php echo esc_html( $ddn_formattee ); ?></p>
+			<p style="margin: 4px 0;"><strong>Sexe :</strong> <?php echo esc_html( $sexe ); ?></p>
+			<p style="margin: 4px 0;"><strong>Établissement actuel :</strong> <?php echo esc_html( $ecole ); ?></p>
+			<p style="margin: 4px 0;"><strong>Classe :</strong> <?php echo esc_html( $classe ); ?></p>
+			<p style="margin: 4px 0;"><strong>LV1 :</strong> <?php echo esc_html( $lv1 ); ?></p>
+			<p style="margin: 4px 0;"><strong>LV2 :</strong> <?php echo esc_html( $lv2 ); ?></p>
+		</div>
 		<?php
 	}
 }

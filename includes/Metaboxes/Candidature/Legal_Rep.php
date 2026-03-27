@@ -29,34 +29,20 @@ class Legal_Rep {
 		$tel     = get_post_meta( $post->ID, '_ceb_legal_tel', true );
 		$email   = get_post_meta( $post->ID, '_ceb_legal_email', true );
 		?>
-		<table class="form-table">
-			<tr>
-				<th><strong>Identité :</strong></th>
-				<td><?php echo esc_html( $prenom . ' ' . $nom ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Lien de parenté :</strong></th>
-				<td><?php echo esc_html( $lien ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Adresse :</strong></th>
-				<td>
-					<p><?php echo esc_html( $adresse ); ?></p>
-					<?php if ( ! empty( $cplt ) ) : ?>
-						<p><?php echo esc_html( $cplt ); ?></p>
-					<?php endif; ?>
-					<p><?php echo esc_html( $cp . ' ' . $ville ); ?></p>
-				</td>
-			</tr>
-			<tr>
-				<th><strong>Téléphone :</strong></th>
-				<td><?php echo esc_html( $tel ); ?></td>
-			</tr>
-			<tr>
-				<th><strong>Courriel :</strong></th>
-				<td><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></td>
-			</tr>
-		</table>
+		<div class="ceb-metabox-content">
+			<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom . ' ' . $nom ); ?></p>
+			<p style="margin: 4px 0;"><strong>Lien de parenté :</strong> <?php echo esc_html( $lien ); ?></p>
+
+			<p style="margin: 4px 0;"><strong>Adresse :</strong><br>
+			<?php echo esc_html( $adresse ); ?><br>
+			<?php if ( ! empty( $cplt ) ) : ?>
+				<?php echo esc_html( $cplt ); ?><br>
+			<?php endif; ?>
+			<?php echo esc_html( $cp . ' ' . $ville ); ?></p>
+
+			<p style="margin: 4px 0;"><strong>Téléphone :</strong> <?php echo esc_html( $tel ); ?></p>
+			<p style="margin: 4px 0;"><strong>Courriel :</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></p>
+		</div>
 		<?php
 	}
 }
