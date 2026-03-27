@@ -51,5 +51,14 @@ function ceb_run_plugin() {
 
 	$shortcode_application_form = new \CEB\Shortcodes\Application_Form\Manager();
 	$shortcode_application_form->init();
+
+	$metabox_identity = new \CEB\Metaboxes\Candidature\Identity();
+	$metabox_identity->init();
+
+	$metabox_legal_rep = new \CEB\Metaboxes\Candidature\Legal_Rep();
+	$metabox_legal_rep->init();
+
+	$metabox_chess_journey = new \CEB\Metaboxes\Candidature\Chess_Journey();
+	$metabox_chess_journey->init();
 }
 add_action( 'plugins_loaded', 'ceb_run_plugin' );
