@@ -44,8 +44,10 @@ class Render {
 
 					<div class="form-row">
 						<label>Sexe <span class="required">*</span></label>
-						<label><input type="radio" name="ceb_eleve_sexe" value="Masculin" required> Masculin</label>
-						<label><input type="radio" name="ceb_eleve_sexe" value="Féminin" required> Féminin</label>
+						<div class="radio-group">
+							<label><input type="radio" name="ceb_eleve_sexe" value="Masculin" required> Masculin</label>
+							<label><input type="radio" name="ceb_eleve_sexe" value="Féminin" required> Féminin</label>
+						</div>
 					</div>
 
 					<div class="form-row">
@@ -103,13 +105,12 @@ class Render {
 					</div>
 
 					<div class="form-row">
-						<label for="ceb_legal_lien">Lien de parenté <span class="required">*</span></label>
-						<select id="ceb_legal_lien" name="ceb_legal_lien" required>
-							<option value="">Sélectionnez...</option>
-							<option value="Père">Père</option>
-							<option value="Mère">Mère</option>
-							<option value="Tuteur">Tuteur</option>
-						</select>
+						<label>Lien de parenté <span class="required">*</span></label>
+						<div class="radio-group">
+							<label><input type="radio" name="ceb_legal_lien" value="Père" required> Père</label>
+							<label><input type="radio" name="ceb_legal_lien" value="Mère" required> Mère</label>
+							<label><input type="radio" name="ceb_legal_lien" value="Tuteur" required> Tuteur</label>
+						</div>
 					</div>
 
 					<div class="form-row">
@@ -202,8 +203,10 @@ class Render {
 					<!-- Motivation (Fichier ou Texte) -->
 					<div class="form-row">
 						<label>Format de la motivation <span class="required">*</span></label>
-						<label><input type="radio" name="ceb_motivation_type" value="fichier" checked required> Joindre un fichier</label>
-						<label><input type="radio" name="ceb_motivation_type" value="texte" required> Rédiger ici</label>
+						<div class="radio-group">
+							<label><input type="radio" name="ceb_motivation_type" value="fichier" checked required> Joindre un fichier</label>
+							<label><input type="radio" name="ceb_motivation_type" value="texte" required> Rédiger ici</label>
+						</div>
 					</div>
 
 					<div class="form-row" id="ceb_motivation_fichier_wrap">
