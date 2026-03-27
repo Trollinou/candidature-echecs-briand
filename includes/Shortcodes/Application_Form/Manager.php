@@ -5,6 +5,10 @@ class Manager {
 
 	public function init() {
 		add_shortcode( 'ceb_formulaire_candidature', [ $this, 'render_shortcode' ] );
+
+		// Initialisation du traitement de formulaire
+		$handler = new Handler();
+		$handler->init();
 	}
 
 	public function render_shortcode( $atts ) {
