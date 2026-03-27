@@ -48,5 +48,8 @@ spl_autoload_register( function ( $class ) {
 function ceb_run_plugin() {
 	$cpt_candidature = new \CEB\CPT\Candidature();
 	$cpt_candidature->init();
+
+	$shortcode_application_form = new \CEB\Shortcodes\Application_Form\Manager();
+	$shortcode_application_form->init();
 }
 add_action( 'plugins_loaded', 'ceb_run_plugin' );
