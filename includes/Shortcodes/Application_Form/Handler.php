@@ -49,7 +49,7 @@ class Handler {
 			'post_status' => 'publish',
 		] );
 
-		if ( is_wp_error( $post_id ) || $post_id === 0 ) {
+		if ( $post_id === 0 ) {
 			wp_die( 'Erreur lors de la création de la candidature.' );
 		}
 

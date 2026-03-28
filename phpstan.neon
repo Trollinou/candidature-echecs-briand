@@ -4,6 +4,8 @@ parameters:
     level: 6
     paths:
         - .
+    bootstrapFiles:
+        - candidature-echecs-briand.php
     excludePaths:
         - node_modules/
         - vendor/
