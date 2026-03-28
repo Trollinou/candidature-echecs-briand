@@ -1,0 +1,15 @@
+{
+  "name": "candidature-echecs-briand",
+  "version": "1.0.0",
+  "description": "Gestion des candidatures pour la section sportive échecs",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint:js": "wp-scripts lint-js"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-wordpress": "^0.1.0"
+  }
+}
