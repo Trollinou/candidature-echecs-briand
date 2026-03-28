@@ -1,0 +1,42 @@
+.ceb-application-form-container {
+	#ceb-application-form {
+		fieldset {
+			margin-bottom: 30px;
+			padding: 20px;
+			border: 1px solid #ccc;
+		}
+
+		legend {
+			font-weight: bold;
+			font-size: 1.2em;
+			padding: 0 10px;
+		}
+
+		.form-row {
+			margin-bottom: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+
+			label {
+				text-transform: uppercase;
+				font-weight: bold;
+			}
+		}
+
+		/* Grouping radio buttons inline */
+		.radio-group {
+			display: flex;
+			gap: 15px;
+			align-items: center;
+
+			label {
+				text-transform: none;
+				font-weight: normal;
+				display: flex;
+				align-items: center;
+				gap: 5px;
+			}
+		}
+	}
+}
