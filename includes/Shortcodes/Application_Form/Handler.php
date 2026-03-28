@@ -1,13 +1,26 @@
 <?php
 namespace CEB\Shortcodes\Application_Form;
 
+/**
+ * Composant de traitement de la soumission du formulaire de candidature
+ */
 class Handler {
 
+	/**
+	 * Initialisation des hooks de traitement
+	 *
+	 * @return void
+	 */
 	public function init() {
 		add_action( 'admin_post_nopriv_ceb_submit_application', [ $this, 'process_form' ] );
 		add_action( 'admin_post_ceb_submit_application', [ $this, 'process_form' ] );
 	}
 
+	/**
+	 * Traitement des données soumises par le formulaire
+	 *
+	 * @return void
+	 */
 	public function process_form() {
 		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( $_POST['ceb_application_nonce'], 'ceb_submit_application' ) ) {
 			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );

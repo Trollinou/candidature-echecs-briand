@@ -1,14 +1,27 @@
 <?php
 namespace CEB\Shortcodes\Application_Form;
 
+/**
+ * Composant de rendu HTML du formulaire de candidature
+ */
 class Render {
 
+	/**
+	 * Affiche le formulaire en utilisant un buffer de sortie
+	 *
+	 * @return string Le code HTML généré.
+	 */
 	public function display() {
 		ob_start();
 		$this->render_html();
 		return ob_get_clean();
 	}
 
+	/**
+	 * Génère le code HTML du formulaire
+	 *
+	 * @return void
+	 */
 	private function render_html() {
 		?>
 		<div class="ceb-application-form-container">
