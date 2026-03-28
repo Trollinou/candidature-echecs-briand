@@ -55,10 +55,10 @@ class Candidature {
 				echo esc_html( get_post_meta( $post_id, '_ceb_target_year', true ) );
 				break;
 			case 'classe':
-				echo esc_html( get_post_meta( $post_id, '_ceb_student_class', true ) );
+				echo esc_html( get_post_meta( $post_id, '_ceb_eleve_classe', true ) );
 				break;
 			case 'niveau':
-				echo esc_html( get_post_meta( $post_id, '_ceb_chess_level', true ) );
+				echo esc_html( get_post_meta( $post_id, '_ceb_echecs_niveau', true ) );
 				break;
 		}
 	}
