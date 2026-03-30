@@ -29,6 +29,7 @@
 			display: flex;
 			gap: 15px;
 			align-items: center;
+			flex-wrap: wrap;
 
 			label {
 				text-transform: none;
@@ -36,6 +37,12 @@
 				display: flex;
 				align-items: center;
 				gap: 5px;
+				margin: 0;
+				padding: 0;
+			}
+
+			input[type="radio"] {
+				margin: 0;
 			}
 		}
 	}

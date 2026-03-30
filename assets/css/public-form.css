@@ -26,6 +26,7 @@
 	display: flex;
 	gap: 15px;
 	align-items: center;
+	flex-wrap: wrap;
 }
 
 .ceb-application-form-container #ceb-application-form .radio-group label {
@@ -34,4 +35,10 @@
 	display: flex;
 	align-items: center;
 	gap: 5px;
+	margin: 0;
+	padding: 0;
+}
+
+.ceb-application-form-container #ceb-application-form .radio-group input[type="radio"] {
+	margin: 0;
 }
