@@ -26,6 +26,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	// Sélecteurs pour les Noms
 	const nomEleve = document.getElementById( 'ceb_eleve_nom' );
 	const nomRep = document.getElementById( 'ceb_legal_nom' );
+	const nomRep2 = document.getElementById( 'ceb_legal2_nom' );
 
 	if ( nomEleve ) {
 		nomEleve.addEventListener( 'blur', forceUpperCase );
@@ -33,16 +34,23 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	if ( nomRep ) {
 		nomRep.addEventListener( 'blur', forceUpperCase );
 	}
+	if ( nomRep2 ) {
+		nomRep2.addEventListener( 'blur', forceUpperCase );
+	}
 
 	// Sélecteurs pour les Prénoms
 	const prenomEleve = document.getElementById( 'ceb_eleve_prenom' );
 	const prenomRep = document.getElementById( 'ceb_legal_prenom' );
+	const prenomRep2 = document.getElementById( 'ceb_legal2_prenom' );
 
 	if ( prenomEleve ) {
 		prenomEleve.addEventListener( 'blur', forceTitleCase );
 	}
 	if ( prenomRep ) {
 		prenomRep.addEventListener( 'blur', forceTitleCase );
+	}
+	if ( prenomRep2 ) {
+		prenomRep2.addEventListener( 'blur', forceTitleCase );
 	}
 
 	// Gestion de la Motivation

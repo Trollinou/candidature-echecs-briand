@@ -47,6 +47,16 @@ class Legal_Rep {
 		$ville   = (string) get_post_meta( $post->ID, '_ceb_legal_ville', true );
 		$tel     = (string) get_post_meta( $post->ID, '_ceb_legal_tel', true );
 		$email   = (string) get_post_meta( $post->ID, '_ceb_legal_email', true );
+
+		$nom2     = (string) get_post_meta( $post->ID, '_ceb_legal2_nom', true );
+		$prenom2  = (string) get_post_meta( $post->ID, '_ceb_legal2_prenom', true );
+		$lien2    = (string) get_post_meta( $post->ID, '_ceb_legal2_lien', true );
+		$adresse2 = (string) get_post_meta( $post->ID, '_ceb_legal2_adresse', true );
+		$cplt2    = (string) get_post_meta( $post->ID, '_ceb_legal2_cplt', true );
+		$cp2      = (string) get_post_meta( $post->ID, '_ceb_legal2_cp', true );
+		$ville2   = (string) get_post_meta( $post->ID, '_ceb_legal2_ville', true );
+		$tel2     = (string) get_post_meta( $post->ID, '_ceb_legal2_tel', true );
+		$email2   = (string) get_post_meta( $post->ID, '_ceb_legal2_email', true );
 		?>
 		<div class="ceb-metabox-content">
 			<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom . ' ' . $nom ); ?></p>
@@ -61,6 +71,23 @@ class Legal_Rep {
 
 			<p style="margin: 4px 0;"><strong>Téléphone :</strong> <?php echo esc_html( $tel ); ?></p>
 			<p style="margin: 4px 0;"><strong>Courriel :</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></p>
+
+			<?php if ( ! empty( $nom2 ) ) : ?>
+				<hr>
+				<h4 style="margin: 8px 0 4px 0;">Second Représentant Légal</h4>
+				<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom2 . ' ' . $nom2 ); ?></p>
+				<p style="margin: 4px 0;"><strong>Lien de parenté :</strong> <?php echo esc_html( $lien2 ); ?></p>
+
+				<p style="margin: 4px 0;"><strong>Adresse :</strong><br>
+				<?php echo esc_html( $adresse2 ); ?><br>
+				<?php if ( ! empty( $cplt2 ) ) : ?>
+					<?php echo esc_html( $cplt2 ); ?><br>
+				<?php endif; ?>
+				<?php echo esc_html( $cp2 . ' ' . $ville2 ); ?></p>
+
+				<p style="margin: 4px 0;"><strong>Téléphone :</strong> <?php echo esc_html( $tel2 ); ?></p>
+				<p style="margin: 4px 0;"><strong>Courriel :</strong> <a href="mailto:<?php echo esc_attr( $email2 ); ?>"><?php echo esc_html( $email2 ); ?></a></p>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
