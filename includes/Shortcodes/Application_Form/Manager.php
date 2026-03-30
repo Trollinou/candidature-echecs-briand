@@ -36,7 +36,7 @@ class Manager {
 		);
 		wp_register_script(
 			'ceb-public-application-form',
-			plugins_url( 'assets/js/public-form.js', dirname( __FILE__, 3 ) ),
+			plugins_url( 'assets/js/public-application-form.js', dirname( __FILE__, 3 ) ),
 			[],
 			CEB_VERSION,
 			true
