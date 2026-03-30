@@ -29,14 +29,14 @@ class Manager {
 		// On enregistre les assets, mais on ne les charge que si le shortcode est présent (facultatif, mais bonne pratique)
 		// Le nom respecte la convention {slug}-public-{contexte}
 		wp_register_style(
-			'ceb-public-form',
-			CEB_URL . 'assets/css/public-form.css',
+			'ceb-public-application-form',
+			CEB_URL . 'assets/css/public-application-form.css',
 			[],
 			CEB_VERSION
 		);
 		wp_register_script(
-			'ceb-public-form',
-			CEB_URL . 'assets/js/public-form.js',
+			'ceb-public-application-form',
+			CEB_URL . 'assets/js/public-application-form.js',
 			[],
 			CEB_VERSION,
 			true
@@ -51,8 +51,8 @@ class Manager {
 	 */
 	public function render_shortcode( $atts ): string {
 		// S'assurer que les assets sont chargés uniquement quand le shortcode est appelé
-		wp_enqueue_style( 'ceb-public-form' );
-		wp_enqueue_script( 'ceb-public-form' );
+		wp_enqueue_style( 'ceb-public-application-form' );
+		wp_enqueue_script( 'ceb-public-application-form' );
 
 		// Le Render Component est responsable de l'affichage
 		$renderer = new Render();
