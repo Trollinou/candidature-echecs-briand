@@ -129,6 +129,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	const ddnEleve = document.getElementById( 'ceb_eleve_ddn' );
 	if ( ddnEleve ) {
 		const validateAge = ( event ) => {
+			// On ne déclenche la validation complète que lors d'un "blur" ou à la soumission pour ne pas interrompre Chrome
+			if ( event.type !== 'blur' && event.type !== 'submit' ) {
+				return;
+			}
+
 			const ddn = event.target.value;
 			if ( ! ddn ) {
 				event.target.setCustomValidity( '' );
@@ -157,7 +162,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		};
 
 		ddnEleve.addEventListener( 'blur', validateAge );
-		ddnEleve.addEventListener( 'change', validateAge );
 	}
 
 	// Sauvegarde et restauration des données du formulaire via sessionStorage
@@ -248,13 +252,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					if ( target.offsetParent === null ) {
 						// Si l'élément invalide est un champ de fichier caché par exemple
 						toggleMotivationFields();
-					}
 
-					// Assurez-vous que le message est affiché via le navigateur
-					// focus() permet généralement de scroller vers le champ
-					setTimeout( () => {
-						target.focus();
-					}, 100 );
+						// Assurez-vous que le message est affiché via le navigateur
+						// focus() permet généralement de scroller vers le champ
+						setTimeout( () => {
+							target.focus();
+						}, 100 );
+					}
 				}
 			},
 			true
@@ -264,8 +268,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		form.addEventListener( 'submit', ( event ) => {
 			if ( ddnEleve ) {
 				// Re-déclencher la validation de l'âge à la soumission pour s'assurer qu'elle est évaluée
-				const validateAgeOnSubmit = new Event( 'change' );
-				ddnEleve.dispatchEvent( validateAgeOnSubmit );
+				const validateAgeOnSubmit = new Event( 'submit' );
+				validateAge( { target: ddnEleve, type: 'submit' } );
+
 				if ( ! form.checkValidity() ) {
 					event.preventDefault();
 				}
