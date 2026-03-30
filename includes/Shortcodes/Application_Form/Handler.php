@@ -75,6 +75,16 @@ class Handler {
 			'_ceb_legal_tel'           => isset( $_POST['ceb_legal_tel'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_tel'] ) ) : '',
 			'_ceb_legal_email'         => isset( $_POST['ceb_legal_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal_email'] ) ) : '',
 
+			'_ceb_legal2_nom'          => isset( $_POST['ceb_legal2_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_nom'] ) ) ) : '',
+			'_ceb_legal2_prenom'       => isset( $_POST['ceb_legal2_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '',
+			'_ceb_legal2_lien'         => isset( $_POST['ceb_legal2_lien'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_lien'] ) ) : '',
+			'_ceb_legal2_adresse'      => isset( $_POST['ceb_legal2_adresse'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_adresse'] ) ) : '',
+			'_ceb_legal2_cplt'         => isset( $_POST['ceb_legal2_cplt'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cplt'] ) ) : '',
+			'_ceb_legal2_cp'           => isset( $_POST['ceb_legal2_cp'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cp'] ) ) : '',
+			'_ceb_legal2_ville'        => isset( $_POST['ceb_legal2_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_ville'] ) ) ) : '',
+			'_ceb_legal2_tel'          => isset( $_POST['ceb_legal2_tel'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_tel'] ) ) : '',
+			'_ceb_legal2_email'        => isset( $_POST['ceb_legal2_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal2_email'] ) ) : '',
+
 			'_ceb_echecs_debut'        => isset( $_POST['ceb_echecs_debut'] ) ? absint( $_POST['ceb_echecs_debut'] ) : '',
 			'_ceb_echecs_club'         => isset( $_POST['ceb_echecs_club'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_echecs_club'] ) ) : '',
 			'_ceb_echecs_niveau'       => isset( $_POST['ceb_echecs_niveau'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_echecs_niveau'] ) ) : '',
@@ -200,6 +210,21 @@ class Handler {
 		$message .= "<li><strong>Téléphone :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_tel'] ) ? (string) $meta_mapping['_ceb_legal_tel'] : '' ) . "</li>";
 		$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '' ) . "</li>";
 		$message .= "</ul>";
+
+		if ( ! empty( $meta_mapping['_ceb_legal2_nom'] ) || ! empty( $meta_mapping['_ceb_legal2_email'] ) ) {
+			$message .= "<h4>Second Représentant Légal</h4>";
+			$message .= "<ul>";
+			$message .= "<li><strong>Nom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_nom'] ) . "</li>";
+			$message .= "<li><strong>Prénom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_prenom'] ) . "</li>";
+			$message .= "<li><strong>Lien de parenté :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_lien'] ) ? (string) $meta_mapping['_ceb_legal2_lien'] : '' ) . "</li>";
+			$message .= "<li><strong>Adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_adresse'] ) ? (string) $meta_mapping['_ceb_legal2_adresse'] : '' ) . "</li>";
+			$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cplt'] ) ? (string) $meta_mapping['_ceb_legal2_cplt'] : '' ) . "</li>";
+			$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cp'] ) ? (string) $meta_mapping['_ceb_legal2_cp'] : '' ) . "</li>";
+			$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_ville'] ) . "</li>";
+			$message .= "<li><strong>Téléphone :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_tel'] ) ? (string) $meta_mapping['_ceb_legal2_tel'] : '' ) . "</li>";
+			$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_email'] ) ? (string) $meta_mapping['_ceb_legal2_email'] : '' ) . "</li>";
+			$message .= "</ul>";
+		}
 
 		$message .= "<h4>3. Parcours échiquéen</h4>";
 		$message .= "<ul>";

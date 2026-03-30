@@ -168,6 +168,60 @@ class Render {
 					</div>
 				</fieldset>
 
+				<!-- 2b. Second Représentant légal (Optionnel) -->
+				<fieldset>
+					<legend>Second Représentant Légal (Optionnel)</legend>
+
+					<div class="form-row">
+						<label for="ceb_legal2_nom">Nom</label>
+						<input type="text" id="ceb_legal2_nom" name="ceb_legal2_nom" placeholder="NOM DU REPRÉSENTANT">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_prenom">Prénom</label>
+						<input type="text" id="ceb_legal2_prenom" name="ceb_legal2_prenom" placeholder="Prénom">
+					</div>
+
+					<div class="form-row">
+						<label>Lien de parenté</label>
+						<div class="radio-group">
+							<label><input type="radio" name="ceb_legal2_lien" value="Père"> Père</label>
+							<label><input type="radio" name="ceb_legal2_lien" value="Mère"> Mère</label>
+							<label><input type="radio" name="ceb_legal2_lien" value="Tuteur"> Tuteur</label>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_adresse">Adresse</label>
+						<input type="text" id="ceb_legal2_adresse" name="ceb_legal2_adresse">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_cplt">Complément d'adresse</label>
+						<input type="text" id="ceb_legal2_cplt" name="ceb_legal2_cplt">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_cp">Code Postal</label>
+						<input type="text" id="ceb_legal2_cp" name="ceb_legal2_cp" pattern="[0-9]{5}">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_ville">Ville</label>
+						<input type="text" id="ceb_legal2_ville" name="ceb_legal2_ville" placeholder="VILLE">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_tel">Téléphone</label>
+						<input type="tel" id="ceb_legal2_tel" name="ceb_legal2_tel">
+					</div>
+
+					<div class="form-row">
+						<label for="ceb_legal2_email">Courriel</label>
+						<input type="email" id="ceb_legal2_email" name="ceb_legal2_email">
+					</div>
+				</fieldset>
+
 				<!-- 3. Parcours échiquéen -->
 				<fieldset>
 					<legend>3. Parcours échiquéen</legend>
