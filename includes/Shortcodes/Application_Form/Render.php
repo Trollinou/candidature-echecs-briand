@@ -174,7 +174,7 @@ class Render {
 
 					<div class="form-row">
 						<label for="ceb_echecs_debut">Année de début des Échecs <span class="required">*</span></label>
-						<input type="number" id="ceb_echecs_debut" name="ceb_echecs_debut" min="2000" max="<?php echo date('Y'); ?>" required>
+						<input type="number" id="ceb_echecs_debut" name="ceb_echecs_debut" min="2000" max="<?php echo esc_attr( wp_date( 'Y' ) ); ?>" required>
 					</div>
 
 					<div class="form-row">
@@ -262,37 +262,6 @@ class Render {
 			</form>
 		</div>
 
-		<!-- Script Vanilla JS pour la Motivation -->
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const radios = document.querySelectorAll('input[name="ceb_motivation_type"]');
-			const fileWrap = document.getElementById('ceb_motivation_fichier_wrap');
-			const textWrap = document.getElementById('ceb_motivation_texte_wrap');
-			const fileInput = document.getElementById('ceb_motivation_fichier');
-
-			function toggleMotivationFields() {
-				const selectedType = document.querySelector('input[name="ceb_motivation_type"]:checked').value;
-
-				if (selectedType === 'fichier') {
-					fileWrap.style.display = 'block';
-					textWrap.style.display = 'none';
-					fileInput.required = true;
-					// Note: MCE n'a pas d'attribut "required" natif fiable qui bloque le submit de façon simple.
-				} else {
-					fileWrap.style.display = 'none';
-					textWrap.style.display = 'block';
-					fileInput.required = false;
-				}
-			}
-
-			radios.forEach(radio => {
-				radio.addEventListener('change', toggleMotivationFields);
-			});
-
-			// Initialisation
-			toggleMotivationFields();
-		});
-		</script>
 		<?php
 	}
 }

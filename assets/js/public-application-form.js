@@ -44,4 +44,50 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	if ( prenomRep ) {
 		prenomRep.addEventListener( 'blur', forceTitleCase );
 	}
+
+	// Gestion de la Motivation
+	const radios = document.querySelectorAll(
+		'input[name="ceb_motivation_type"]'
+	);
+	const fileWrap = document.getElementById( 'ceb_motivation_fichier_wrap' );
+	const textWrap = document.getElementById( 'ceb_motivation_texte_wrap' );
+	const fileInput = document.getElementById( 'ceb_motivation_fichier' );
+
+	const toggleMotivationFields = () => {
+		const selectedRadio = document.querySelector(
+			'input[name="ceb_motivation_type"]:checked'
+		);
+		if ( ! selectedRadio ) {
+			return;
+		}
+
+		if ( selectedRadio.value === 'fichier' ) {
+			if ( fileWrap ) {
+				fileWrap.style.display = 'block';
+			}
+			if ( textWrap ) {
+				textWrap.style.display = 'none';
+			}
+			if ( fileInput ) {
+				fileInput.required = true;
+			}
+		} else {
+			if ( fileWrap ) {
+				fileWrap.style.display = 'none';
+			}
+			if ( textWrap ) {
+				textWrap.style.display = 'block';
+			}
+			if ( fileInput ) {
+				fileInput.required = false;
+			}
+		}
+	};
+
+	radios.forEach( ( radio ) => {
+		radio.addEventListener( 'change', toggleMotivationFields );
+	} );
+
+	// Initialisation
+	toggleMotivationFields();
 } );
