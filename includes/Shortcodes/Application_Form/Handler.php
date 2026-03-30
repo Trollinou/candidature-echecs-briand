@@ -11,7 +11,7 @@ class Handler {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		add_action( 'admin_post_nopriv_ceb_submit_application', [ $this, 'process_form' ] );
 		add_action( 'admin_post_ceb_submit_application', [ $this, 'process_form' ] );
 	}
@@ -21,8 +21,8 @@ class Handler {
 	 *
 	 * @return void
 	 */
-	public function process_form() {
-		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( $_POST['ceb_application_nonce'], 'ceb_submit_application' ) ) {
+	public function process_form(): void {
+		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ceb_application_nonce'] ) ), 'ceb_submit_application' ) ) {
 			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );
 		}
 

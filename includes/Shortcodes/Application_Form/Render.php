@@ -11,10 +11,10 @@ class Render {
 	 *
 	 * @return string Le code HTML généré.
 	 */
-	public function display() {
+	public function display(): string {
 		ob_start();
 		$this->render_html();
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 	/**
@@ -22,7 +22,7 @@ class Render {
 	 *
 	 * @return void
 	 */
-	private function render_html() {
+	private function render_html(): void {
 		?>
 		<div class="ceb-application-form-container">
 			<?php if ( isset( $_GET['success'] ) && '1' === $_GET['success'] ) : ?>

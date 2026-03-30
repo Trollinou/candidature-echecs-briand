@@ -11,7 +11,7 @@ class Manager {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		add_shortcode( 'ceb_formulaire_candidature', [ $this, 'render_shortcode' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
@@ -25,7 +25,7 @@ class Manager {
 	 *
 	 * @return void
 	 */
-	public function enqueue_assets() {
+	public function enqueue_assets(): void {
 		// On enregistre les assets, mais on ne les charge que si le shortcode est présent (facultatif, mais bonne pratique)
 		// Le nom respecte la convention {slug}-public-{contexte}
 		wp_register_style(
@@ -49,7 +49,7 @@ class Manager {
 	 * @param array<string, mixed>|string $atts Les attributs du shortcode.
 	 * @return string Le code HTML du formulaire.
 	 */
-	public function render_shortcode( $atts ) {
+	public function render_shortcode( $atts ): string {
 		// S'assurer que les assets sont chargés uniquement quand le shortcode est appelé
 		wp_enqueue_style( 'ceb-public-application-form' );
 		wp_enqueue_script( 'ceb-public-application-form' );

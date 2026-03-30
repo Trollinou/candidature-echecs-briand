@@ -11,7 +11,7 @@ class Legal_Rep {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
@@ -20,7 +20,7 @@ class Legal_Rep {
 	 *
 	 * @return void
 	 */
-	public function add_box() {
+	public function add_box():void {
 		add_meta_box(
 			'ceb_candidature_legal_rep',
 			'2. Représentant légal',
@@ -37,16 +37,16 @@ class Legal_Rep {
 	 * @param \WP_Post $post L'objet Post courant.
 	 * @return void
 	 */
-	public function render( $post ) {
-		$nom     = get_post_meta( $post->ID, '_ceb_legal_nom', true );
-		$prenom  = get_post_meta( $post->ID, '_ceb_legal_prenom', true );
-		$lien    = get_post_meta( $post->ID, '_ceb_legal_lien', true );
-		$adresse = get_post_meta( $post->ID, '_ceb_legal_adresse', true );
-		$cplt    = get_post_meta( $post->ID, '_ceb_legal_cplt', true );
-		$cp      = get_post_meta( $post->ID, '_ceb_legal_cp', true );
-		$ville   = get_post_meta( $post->ID, '_ceb_legal_ville', true );
-		$tel     = get_post_meta( $post->ID, '_ceb_legal_tel', true );
-		$email   = get_post_meta( $post->ID, '_ceb_legal_email', true );
+	public function render( \WP_Post $post ): void {
+		$nom     = (string) get_post_meta( $post->ID, '_ceb_legal_nom', true );
+		$prenom  = (string) get_post_meta( $post->ID, '_ceb_legal_prenom', true );
+		$lien    = (string) get_post_meta( $post->ID, '_ceb_legal_lien', true );
+		$adresse = (string) get_post_meta( $post->ID, '_ceb_legal_adresse', true );
+		$cplt    = (string) get_post_meta( $post->ID, '_ceb_legal_cplt', true );
+		$cp      = (string) get_post_meta( $post->ID, '_ceb_legal_cp', true );
+		$ville   = (string) get_post_meta( $post->ID, '_ceb_legal_ville', true );
+		$tel     = (string) get_post_meta( $post->ID, '_ceb_legal_tel', true );
+		$email   = (string) get_post_meta( $post->ID, '_ceb_legal_email', true );
 		?>
 		<div class="ceb-metabox-content">
 			<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom . ' ' . $nom ); ?></p>

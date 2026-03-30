@@ -11,7 +11,7 @@ class Identity {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
@@ -20,7 +20,7 @@ class Identity {
 	 *
 	 * @return void
 	 */
-	public function add_box() {
+	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_identity',
 			'1. Identité de l\'élève',
@@ -37,17 +37,17 @@ class Identity {
 	 * @param \WP_Post $post L'objet Post courant.
 	 * @return void
 	 */
-	public function render( $post ) {
-		$nom    = get_post_meta( $post->ID, '_ceb_eleve_nom', true );
-		$prenom = get_post_meta( $post->ID, '_ceb_eleve_prenom', true );
-		$ddn    = get_post_meta( $post->ID, '_ceb_eleve_ddn', true );
-		$sexe   = get_post_meta( $post->ID, '_ceb_eleve_sexe', true );
-		$ecole  = get_post_meta( $post->ID, '_ceb_eleve_ecole', true );
-		$classe = get_post_meta( $post->ID, '_ceb_eleve_classe', true );
-		$lv1    = get_post_meta( $post->ID, '_ceb_eleve_lv1', true );
-		$lv2    = get_post_meta( $post->ID, '_ceb_eleve_lv2', true );
+	public function render( \WP_Post $post ): void {
+		$nom    = (string) get_post_meta( $post->ID, '_ceb_eleve_nom', true );
+		$prenom = (string) get_post_meta( $post->ID, '_ceb_eleve_prenom', true );
+		$ddn    = (string) get_post_meta( $post->ID, '_ceb_eleve_ddn', true );
+		$sexe   = (string) get_post_meta( $post->ID, '_ceb_eleve_sexe', true );
+		$ecole  = (string) get_post_meta( $post->ID, '_ceb_eleve_ecole', true );
+		$classe = (string) get_post_meta( $post->ID, '_ceb_eleve_classe', true );
+		$lv1    = (string) get_post_meta( $post->ID, '_ceb_eleve_lv1', true );
+		$lv2    = (string) get_post_meta( $post->ID, '_ceb_eleve_lv2', true );
 
-		$ddn_formattee = $ddn ? wp_date( 'd/m/Y', strtotime( $ddn ) ) : '';
+		$ddn_formattee = $ddn ? wp_date( 'd/m/Y', (int) strtotime( $ddn ) ) : '';
 		?>
 		<div class="ceb-metabox-content">
 			<p style="margin: 4px 0;"><strong>Nom :</strong> <?php echo esc_html( $nom ); ?></p>
