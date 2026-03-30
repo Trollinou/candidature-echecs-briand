@@ -1,12 +1,25 @@
 <?php
 namespace CEB\Metaboxes\Candidature;
 
+/**
+ * Metabox : Parcours Échiquéen et Motivation (Lecture seule)
+ */
 class Chess_Journey {
 
+	/**
+	 * Initialisation de la metabox
+	 *
+	 * @return void
+	 */
 	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
+	/**
+	 * Ajout de la metabox dans le CPT
+	 *
+	 * @return void
+	 */
 	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_chess',
@@ -19,7 +32,10 @@ class Chess_Journey {
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * Rendu HTML de la metabox (Lecture seule)
+	 *
+	 * @param \WP_Post $post L'objet Post courant.
+	 * @return void
 	 */
 	public function render( \WP_Post $post ): void {
 		$debut        = (string) get_post_meta( $post->ID, '_ceb_echecs_debut', true );
@@ -27,7 +43,6 @@ class Chess_Journey {
 		$niveau       = (string) get_post_meta( $post->ID, '_ceb_echecs_niveau', true );
 		$competitions = (string) get_post_meta( $post->ID, '_ceb_echecs_competitions', true );
 		$titres       = (string) get_post_meta( $post->ID, '_ceb_echecs_titres', true );
-
 		$motivation_type = (string) get_post_meta( $post->ID, '_ceb_motivation_type', true );
 		?>
 		<div class="ceb-metabox-content">

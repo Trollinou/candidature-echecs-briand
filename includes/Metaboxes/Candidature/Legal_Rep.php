@@ -1,13 +1,26 @@
 <?php
 namespace CEB\Metaboxes\Candidature;
 
+/**
+ * Metabox : Représentant Légal (Lecture seule)
+ */
 class Legal_Rep {
 
+	/**
+	 * Initialisation de la metabox
+	 *
+	 * @return void
+	 */
 	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
-	public function add_box(): void {
+	/**
+	 * Ajout de la metabox dans le CPT
+	 *
+	 * @return void
+	 */
+	public function add_box():void {
 		add_meta_box(
 			'ceb_candidature_legal_rep',
 			'2. Représentant légal',
@@ -19,7 +32,10 @@ class Legal_Rep {
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * Rendu HTML de la metabox (Lecture seule)
+	 *
+	 * @param \WP_Post $post L'objet Post courant.
+	 * @return void
 	 */
 	public function render( \WP_Post $post ): void {
 		$nom     = (string) get_post_meta( $post->ID, '_ceb_legal_nom', true );

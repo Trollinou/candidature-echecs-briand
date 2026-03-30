@@ -1,12 +1,25 @@
 <?php
 namespace CEB\Metaboxes\Candidature;
 
+/**
+ * Metabox : Identité de l'élève (Lecture seule)
+ */
 class Identity {
 
+	/**
+	 * Initialisation de la metabox
+	 *
+	 * @return void
+	 */
 	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
+	/**
+	 * Ajout de la metabox dans le CPT
+	 *
+	 * @return void
+	 */
 	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_identity',
@@ -19,7 +32,10 @@ class Identity {
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * Rendu HTML de la metabox (Lecture seule)
+	 *
+	 * @param \WP_Post $post L'objet Post courant.
+	 * @return void
 	 */
 	public function render( \WP_Post $post ): void {
 		$nom    = (string) get_post_meta( $post->ID, '_ceb_eleve_nom', true );

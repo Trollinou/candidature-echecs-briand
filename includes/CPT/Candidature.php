@@ -1,14 +1,27 @@
 <?php
 namespace CEB\CPT;
 
+/**
+ * Gestion du Custom Post Type "Candidature"
+ */
 class Candidature {
 
+	/**
+	 * Initialisation du CPT et de ses colonnes
+	 *
+	 * @return void
+	 */
 	public function init(): void {
 		add_action( 'init', [ $this, 'register_cpt' ] );
 		add_filter( 'manage_ceb_candidature_posts_columns', [ $this, 'set_custom_columns' ] );
 		add_action( 'manage_ceb_candidature_posts_custom_column', [ $this, 'render_custom_columns' ], 10, 2 );
 	}
 
+	/**
+	 * Enregistrement du type de publication personnalisé "ceb_candidature"
+	 *
+	 * @return void
+	 */
 	public function register_cpt(): void {
 		$labels = [
 			'name'                  => 'Candidatures',
@@ -39,8 +52,10 @@ class Candidature {
 	}
 
 	/**
-	 * @param array<string, string> $columns
-	 * @return array<string, string>
+	 * Définition des colonnes personnalisées pour la liste des candidatures
+	 *
+	 * @param array<string, string> $columns Les colonnes par défaut.
+	 * @return array<string, string> Les colonnes modifiées.
 	 */
 	public function set_custom_columns( array $columns ): array {
 		$new_columns = [];
@@ -53,6 +68,13 @@ class Candidature {
 		return $new_columns;
 	}
 
+	/**
+	 * Affichage du contenu des colonnes personnalisées
+	 *
+	 * @param string $column  L'identifiant de la colonne.
+	 * @param int    $post_id L'ID de la publication.
+	 * @return void
+	 */
 	public function render_custom_columns( string $column, int $post_id ): void {
 		switch ( $column ) {
 			case 'rentree':

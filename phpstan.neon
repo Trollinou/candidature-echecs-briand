@@ -6,6 +6,8 @@ parameters:
         - candidature-echecs-briand.php
     paths:
         - .
+    bootstrapFiles:
+        - candidature-echecs-briand.php
     excludePaths:
         - node_modules/
         - vendor/
