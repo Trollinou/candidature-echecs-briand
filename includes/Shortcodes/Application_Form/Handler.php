@@ -83,14 +83,11 @@ class Handler {
 			'_ceb_target_year'         => (string) $target_year,
 		];
 
-		foreach ( $meta_mapping as $meta_key => $meta_value ) {
-			update_post_meta( $post_id, $meta_key, $meta_value );
-		}
-
 		// Gestion de la motivation
 		$motivation_type = isset( $_POST['ceb_motivation_type'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_motivation_type'] ) ) : 'fichier';
-		update_post_meta( $post_id, '_ceb_motivation_type', $motivation_type );
+		$meta_mapping['_ceb_motivation_type'] = $motivation_type;
 
+		$motivation_file_error = false;
 		if ( 'fichier' === $motivation_type ) {
 			if ( ! empty( $_FILES['ceb_motivation_fichier']['name'] ) ) {
 				require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -112,14 +109,39 @@ class Handler {
 					wp_delete_post( $post_id, true );
 					wp_die( 'Erreur lors du téléchargement du fichier de motivation : ' . esc_html( $attachment_id->get_error_message() ) );
 				}
-				update_post_meta( $post_id, '_ceb_motivation_fichier_id', $attachment_id );
+				$meta_mapping['_ceb_motivation_fichier_id'] = $attachment_id;
 			} else {
-				wp_delete_post( $post_id, true );
-				wp_die( 'Le fichier de motivation est requis.' );
+				$motivation_file_error = true;
 			}
 		} elseif ( 'texte' === $motivation_type ) {
-			$motivation_texte = isset( $_POST['ceb_motivation_texte'] ) ? wp_kses_post( wp_unslash( $_POST['ceb_motivation_texte'] ) ) : '';
-			update_post_meta( $post_id, '_ceb_motivation_texte', $motivation_texte );
+			$meta_mapping['_ceb_motivation_texte'] = isset( $_POST['ceb_motivation_texte'] ) ? wp_kses_post( wp_unslash( $_POST['ceb_motivation_texte'] ) ) : '';
+		}
+
+		if ( $motivation_file_error ) {
+			wp_delete_post( $post_id, true );
+			wp_die( 'Le fichier de motivation est requis.' );
+		}
+
+		// Bulk Insert Metas
+		global $wpdb;
+		$values = [];
+		$placeholders = [];
+
+		foreach ( $meta_mapping as $meta_key => $meta_value ) {
+			$placeholders[] = '(%d, %s, %s)';
+			$values[] = $post_id;
+			$values[] = $meta_key;
+			$values[] = $meta_value;
+		}
+
+		if ( ! empty( $values ) ) {
+			$query = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ', ', $placeholders );
+			$wpdb->query( $wpdb->prepare( $query, $values ) );
+		}
+
+		// Invalidation du cache post meta
+		if ( function_exists( 'clean_post_cache' ) ) {
+			clean_post_cache( $post_id );
 		}
 
 		// Redirection
