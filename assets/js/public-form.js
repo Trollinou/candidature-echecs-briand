@@ -150,7 +150,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				event.target.setCustomValidity(
 					"L'âge du candidat doit être compris entre 7 et 17 ans."
 				);
-				event.target.reportValidity();
 			} else {
 				event.target.setCustomValidity( '' );
 			}
@@ -248,13 +247,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					if ( target.offsetParent === null ) {
 						// Si l'élément invalide est un champ de fichier caché par exemple
 						toggleMotivationFields();
-					}
 
-					// Assurez-vous que le message est affiché via le navigateur
-					// focus() permet généralement de scroller vers le champ
-					setTimeout( () => {
-						target.focus();
-					}, 100 );
+						// Assurez-vous que le message est affiché via le navigateur
+						// focus() permet généralement de scroller vers le champ
+						setTimeout( () => {
+							target.focus();
+						}, 100 );
+					}
 				}
 			},
 			true

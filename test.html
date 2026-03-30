@@ -5,7 +5,7 @@
     <title>Test Form</title>
 </head>
 <body>
-    <form>
+    <form id="ceb-application-form">
         <div class="form-row">
             <label for="ceb_eleve_prenom">Prénom</label>
             <input type="text" id="ceb_eleve_prenom" name="ceb_eleve_prenom">
@@ -14,7 +14,10 @@
             <label for="ceb_eleve_nom">Nom</label>
             <input type="text" id="ceb_eleve_nom" name="ceb_eleve_nom">
         </div>
-
+        <div class="form-row">
+            <label for="ceb_eleve_ddn">Date de naissance</label>
+            <input type="date" id="ceb_eleve_ddn" name="ceb_eleve_ddn">
+        </div>
         <div class="form-row">
             <label><input type="radio" name="ceb_motivation_type" value="fichier" checked> Joindre un fichier</label>
             <label><input type="radio" name="ceb_motivation_type" value="texte"> Rédiger ici</label>
@@ -29,7 +32,9 @@
             <label for="ceb_motivation_texte">Texte</label>
             <textarea id="ceb_motivation_texte" name="ceb_motivation_texte"></textarea>
         </div>
+
+        <button type="submit">Soumettre ma candidature</button>
     </form>
-    <script src="assets/js/public-application-form.js"></script>
+    <script src="assets/js/public-form.js"></script>
 </body>
 </html>
