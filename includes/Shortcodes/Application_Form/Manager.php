@@ -30,13 +30,13 @@ class Manager {
 		// Le nom respecte la convention {slug}-public-{contexte}
 		wp_register_style(
 			'ceb-public-application-form',
-			CEB_URL . 'assets/css/public-application-form.css',
+			plugins_url( 'assets/css/public-application-form.css', dirname( __FILE__, 3 ) ),
 			[],
 			CEB_VERSION
 		);
 		wp_register_script(
 			'ceb-public-application-form',
-			CEB_URL . 'assets/js/public-application-form.js',
+			plugins_url( 'assets/js/public-application-form.js', dirname( __FILE__, 3 ) ),
 			[],
 			CEB_VERSION,
 			true
