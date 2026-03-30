@@ -52,7 +52,11 @@ class Render {
 
 					<div class="form-row">
 						<label for="ceb_eleve_ddn">Date de naissance <span class="required">*</span></label>
-						<input type="date" id="ceb_eleve_ddn" name="ceb_eleve_ddn" required>
+						<?php
+						$max_date = wp_date( 'Y-m-d', strtotime( '-7 years' ) );
+						$min_date = wp_date( 'Y-m-d', strtotime( '-17 years' ) );
+						?>
+						<input type="date" id="ceb_eleve_ddn" name="ceb_eleve_ddn" min="<?php echo esc_attr( $min_date ); ?>" max="<?php echo esc_attr( $max_date ); ?>" required>
 					</div>
 
 					<div class="form-row">
