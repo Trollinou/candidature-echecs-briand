@@ -97,11 +97,11 @@ class Handler {
 				// Validation du type de fichier
 				$file_name          = sanitize_text_field( wp_unslash( $_FILES['ceb_motivation_fichier']['name'] ) );
 				$file_type          = wp_check_filetype( $file_name );
-				$allowed_extensions = [ 'pdf', 'doc', 'docx' ];
+				$allowed_extensions = [ 'pdf', 'doc', 'docx', 'odt', 'rtf' ];
 
 				if ( ! in_array( strtolower( (string) $file_type['ext'] ), $allowed_extensions, true ) ) {
 					wp_delete_post( $post_id, true );
-					wp_die( 'Type de fichier non autorisé. Veuillez télécharger un fichier PDF, DOC ou DOCX.' );
+					wp_die( 'Type de fichier non autorisé. Veuillez télécharger un fichier PDF, DOC, DOCX, ODT ou RTF.' );
 				}
 
 				$attachment_id = media_handle_upload( 'ceb_motivation_fichier', $post_id );
