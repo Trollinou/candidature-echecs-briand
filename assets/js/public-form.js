@@ -269,7 +269,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			if ( ddnEleve ) {
 				// Re-déclencher la validation de l'âge à la soumission pour s'assurer qu'elle est évaluée
 				const validateAgeOnSubmit = new Event( 'submit' );
-				validateAge( { target: ddnEleve, type: 'submit' } );
+				ddnEleve.dispatchEvent( validateAgeOnSubmit );
 
 				if ( ! form.checkValidity() ) {
 					event.preventDefault();
@@ -277,6 +277,172 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 		} );
 	}
+
+	// IGN Autocomplete
+	function initIGNAutocomplete( addressName, postalCodeName, cityName ) {
+		const addressInput = document.querySelector(
+			`input[name="${ addressName }"]`
+		);
+
+		if ( ! addressInput ) {
+			return;
+		}
+
+		const postalCodeInput = document.querySelector(
+			`input[name="${ postalCodeName }"]`
+		);
+		const cityInput = document.querySelector(
+			`input[name="${ cityName }"]`
+		);
+
+		// Création dynamique du wrapper parent pour positionner la liste absolue
+		const wrapper = document.createElement( 'div' );
+		wrapper.className = 'ceb-autocomplete-wrapper';
+		addressInput.parentNode.insertBefore( wrapper, addressInput );
+		wrapper.appendChild( addressInput );
+
+		const resultsContainer = document.createElement( 'div' );
+		resultsContainer.className = 'ceb-address-suggestions';
+		resultsContainer.style.display = 'none';
+		wrapper.appendChild( resultsContainer );
+
+		let debounceTimer;
+		let highlightedIndex = -1;
+
+		addressInput.addEventListener( 'keyup', function ( e ) {
+			if (
+				[ 'ArrowDown', 'ArrowUp', 'Enter', 'Escape' ].includes( e.key )
+			) {
+				return;
+			}
+
+			clearTimeout( debounceTimer );
+			const query = this.value;
+
+			if ( query.length < 5 ) {
+				resultsContainer.style.display = 'none';
+				return;
+			}
+
+			debounceTimer = setTimeout( () => {
+				fetch(
+					`https://data.geopf.fr/geocodage/completion?text=${ encodeURIComponent(
+						query
+					) }&type=StreetAddress`
+				)
+					.then( ( r ) => r.json() )
+					.then( ( data ) => {
+						resultsContainer.innerHTML = '';
+						highlightedIndex = -1;
+						if ( data.results && data.results.length > 0 ) {
+							resultsContainer.style.display = 'block';
+							data.results.forEach( ( result ) => {
+								const div = document.createElement( 'div' );
+								div.className = 'ceb-suggestion-item';
+								div.textContent = result.fulltext;
+								div.dataset.street = result.fulltext
+									.split( ',' )[ 0 ]
+									.trim();
+								div.dataset.zipcode = result.zipcode;
+								div.dataset.city = result.city;
+								resultsContainer.appendChild( div );
+							} );
+						} else {
+							resultsContainer.style.display = 'none';
+						}
+					} );
+			}, 300 );
+		} );
+
+		addressInput.addEventListener( 'keydown', function ( e ) {
+			const suggestions = resultsContainer.querySelectorAll(
+				'.ceb-suggestion-item'
+			);
+			if ( suggestions.length === 0 ) {
+				return;
+			}
+
+			if ( e.key === 'ArrowDown' ) {
+				e.preventDefault();
+				highlightedIndex =
+					( highlightedIndex + 1 ) % suggestions.length;
+				updateHighlight( suggestions );
+			} else if ( e.key === 'ArrowUp' ) {
+				e.preventDefault();
+				highlightedIndex =
+					highlightedIndex <= 0
+						? suggestions.length - 1
+						: highlightedIndex - 1;
+				updateHighlight( suggestions );
+			} else if ( e.key === 'Enter' ) {
+				e.preventDefault();
+				if ( highlightedIndex > -1 ) {
+					selectSuggestion( suggestions[ highlightedIndex ] );
+				}
+			} else if ( e.key === 'Escape' ) {
+				resultsContainer.style.display = 'none';
+			}
+		} );
+
+		function updateHighlight( suggestions ) {
+			suggestions.forEach( ( s, i ) =>
+				s.classList.toggle( 'highlighted', i === highlightedIndex )
+			);
+		}
+
+		function selectSuggestion( suggestion ) {
+			addressInput.value = suggestion.dataset.street;
+			if ( postalCodeInput ) {
+				postalCodeInput.value = suggestion.dataset.zipcode;
+			}
+			if ( cityInput ) {
+				cityInput.value = suggestion.dataset.city;
+			}
+
+			// CRUCIAL : Déclencher manuellement l'événement 'input' pour que le script SessionStorage sauvegarde ces nouvelles valeurs !
+			addressInput.dispatchEvent(
+				new Event( 'input', { bubbles: true } )
+			);
+			if ( postalCodeInput ) {
+				postalCodeInput.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			}
+			if ( cityInput ) {
+				cityInput.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			}
+
+			resultsContainer.style.display = 'none';
+		}
+
+		resultsContainer.addEventListener( 'click', ( e ) => {
+			if ( e.target.classList.contains( 'ceb-suggestion-item' ) ) {
+				selectSuggestion( e.target );
+			}
+		} );
+
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! wrapper.contains( e.target ) ) {
+				resultsContainer.style.display = 'none';
+			}
+		} );
+	}
+
+	// Initialisation pour le Responsable 1
+	initIGNAutocomplete(
+		'ceb_legal_adresse',
+		'ceb_legal_cp',
+		'ceb_legal_ville'
+	);
+
+	// Initialisation pour le Responsable 2 (si le champ existe)
+	initIGNAutocomplete(
+		'ceb_legal2_adresse',
+		'ceb_legal2_cp',
+		'ceb_legal2_ville'
+	);
 
 	// Initialisation
 	toggleMotivationFields();
