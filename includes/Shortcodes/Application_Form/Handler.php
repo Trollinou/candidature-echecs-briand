@@ -26,9 +26,10 @@ class Handler {
 			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );
 		}
 
-		$nom       = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_nom'] ) ) ) : '';
-		$prenom    = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
-		$classe    = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
+		$nom          = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_nom'] ) ) ) : '';
+		$prenom       = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
+		$classe       = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
+		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe_cible'] ) ) : '';
 
 		// Logique de rentrée
 		$current_month = (int) date( 'n' );
@@ -134,15 +135,94 @@ class Handler {
 			$values[] = $meta_value;
 		}
 
-		if ( ! empty( $values ) ) {
+		if ( count( $values ) > 0 ) {
 			$query = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ', ', $placeholders );
 			$wpdb->query( $wpdb->prepare( $query, $values ) );
 		}
+
+		// Sauvegarde de la classe ciblée via add_post_meta (demande explicite)
+		add_post_meta( $post_id, '_ceb_eleve_classe_cible', $classe_cible );
 
 		// Invalidation du cache post meta
 		if ( function_exists( 'clean_post_cache' ) ) {
 			clean_post_cache( $post_id );
 		}
+
+		// Envoi de l'email de confirmation
+		$legal_email = isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '';
+		$to          = [];
+		if ( is_email( $legal_email ) ) {
+			$to[] = $legal_email;
+		}
+		$to[] = 'contact@echiquier-ledonien.fr';
+
+		$subject = sprintf( 'Nouvelle Candidature %s - Classe %s - %s %s', $target_year, $classe_cible, $nom, $prenom );
+
+		$headers = [ 'Content-Type: text/html; charset=UTF-8' ];
+
+		$attachments = [];
+		if ( 'fichier' === $motivation_type && isset( $attachment_id ) ) {
+			$attached_file = get_attached_file( (int) $attachment_id );
+			if ( $attached_file ) {
+				$attachments[] = $attached_file;
+			}
+		}
+
+		$message  = "<p>Bonjour,</p>";
+		$message .= "<p>Nous vous remercions pour votre candidature à la Section Sportive Échecs du Collège Briand. Votre dossier a bien été transmis au comité de sélection de l'Échiquier Lédonien, qui assurera l'enseignement de la section. Veuillez noter que la décision finale concernant l'acceptation de votre demande reviendra conjointement au Collège et au Rectorat.</p>";
+		$message .= "<h3>Récapitulatif des informations saisies :</h3>";
+
+		$message .= "<h4>1. Identité de l'élève</h4>";
+		$message .= "<ul>";
+		$message .= "<li><strong>Nom :</strong> " . esc_html( $nom ) . "</li>";
+		$message .= "<li><strong>Prénom :</strong> " . esc_html( $prenom ) . "</li>";
+		$message .= "<li><strong>Date de naissance :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_ddn'] ) ? (string) $meta_mapping['_ceb_eleve_ddn'] : '' ) . "</li>";
+		$message .= "<li><strong>Sexe :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_sexe'] ) ? (string) $meta_mapping['_ceb_eleve_sexe'] : '' ) . "</li>";
+		$message .= "<li><strong>Établissement actuel :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_ecole'] ) ? (string) $meta_mapping['_ceb_eleve_ecole'] : '' ) . "</li>";
+		$message .= "<li><strong>Classe actuelle :</strong> " . esc_html( $classe ) . "</li>";
+		$message .= "<li><strong>Classe ciblée à la rentrée :</strong> " . esc_html( $classe_cible ) . "</li>";
+		$message .= "<li><strong>LV1 :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_lv1'] ) ? (string) $meta_mapping['_ceb_eleve_lv1'] : '' ) . "</li>";
+		$message .= "<li><strong>LV2 :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_lv2'] ) ? (string) $meta_mapping['_ceb_eleve_lv2'] : '' ) . "</li>";
+		$message .= "</ul>";
+
+		$message .= "<h4>2. Représentant légal</h4>";
+		$message .= "<ul>";
+		$message .= "<li><strong>Nom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_nom'] ) . "</li>";
+		$message .= "<li><strong>Prénom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_prenom'] ) . "</li>";
+		$message .= "<li><strong>Lien de parenté :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_lien'] ) ? (string) $meta_mapping['_ceb_legal_lien'] : '' ) . "</li>";
+		$message .= "<li><strong>Adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_adresse'] ) ? (string) $meta_mapping['_ceb_legal_adresse'] : '' ) . "</li>";
+		$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cplt'] ) ? (string) $meta_mapping['_ceb_legal_cplt'] : '' ) . "</li>";
+		$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cp'] ) ? (string) $meta_mapping['_ceb_legal_cp'] : '' ) . "</li>";
+		$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_ville'] ) . "</li>";
+		$message .= "<li><strong>Téléphone :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_tel'] ) ? (string) $meta_mapping['_ceb_legal_tel'] : '' ) . "</li>";
+		$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '' ) . "</li>";
+		$message .= "</ul>";
+
+		$message .= "<h4>3. Parcours échiquéen</h4>";
+		$message .= "<ul>";
+		$message .= "<li><strong>Année de début des Échecs :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_debut'] ) ? (string) $meta_mapping['_ceb_echecs_debut'] : '' ) . "</li>";
+		$message .= "<li><strong>Club actuel :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_club'] ) ? (string) $meta_mapping['_ceb_echecs_club'] : '' ) . "</li>";
+		$message .= "<li><strong>Niveau :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_niveau'] ) ? (string) $meta_mapping['_ceb_echecs_niveau'] : '' ) . "</li>";
+
+		$echecs_competitions = isset( $meta_mapping['_ceb_echecs_competitions'] ) ? (string) $meta_mapping['_ceb_echecs_competitions'] : '';
+		if ( ! empty( $echecs_competitions ) ) {
+			$message .= "<li><strong>Principales compétitions effectuées :</strong><br>" . nl2br( esc_html( $echecs_competitions ) ) . "</li>";
+		}
+
+		$echecs_titres = isset( $meta_mapping['_ceb_echecs_titres'] ) ? (string) $meta_mapping['_ceb_echecs_titres'] : '';
+		if ( ! empty( $echecs_titres ) ) {
+			$message .= "<li><strong>Titres notables obtenus :</strong><br>" . nl2br( esc_html( $echecs_titres ) ) . "</li>";
+		}
+
+		if ( 'texte' === $motivation_type ) {
+			$motivation_texte = isset( $meta_mapping['_ceb_motivation_texte'] ) ? (string) $meta_mapping['_ceb_motivation_texte'] : '';
+			$message .= "<li><strong>Texte de motivation :</strong><br>" . nl2br( esc_html( $motivation_texte ) ) . "</li>";
+		}
+		$message .= "</ul>";
+
+		$message .= "<p>Cordialement,<br>L'équipe de la section Échecs</p>";
+
+		wp_mail( $to, $subject, $message, $headers, $attachments );
 
 		// Redirection
 		$redirect_url = wp_get_referer() ?: home_url();
