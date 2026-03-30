@@ -32,8 +32,8 @@ class Handler {
 		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe_cible'] ) ) : '';
 
 		// Logique de rentrée
-		$current_month = (int) date( 'n' );
-		$current_year  = (int) date( 'Y' );
+		$current_month = (int) wp_date( 'n' );
+		$current_year  = (int) wp_date( 'Y' );
 		if ( $current_month >= 3 && $current_month <= 5 ) {
 			$target_year = $current_year;
 		} else {
@@ -123,6 +123,9 @@ class Handler {
 			wp_die( 'Le fichier de motivation est requis.' );
 		}
 
+		// Ajout de la classe ciblée dans le mapping avant l'insertion en masse
+		$meta_mapping['_ceb_eleve_classe_cible'] = $classe_cible;
+
 		// Bulk Insert Metas
 		global $wpdb;
 		$values = [];
@@ -137,11 +140,9 @@ class Handler {
 
 		if ( count( $values ) > 0 ) {
 			$query = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ', ', $placeholders );
-			$wpdb->query( $wpdb->prepare( $query, $values ) );
+			// Unpacking the array is supported in WP $wpdb->prepare since older versions but passing ...$values is standard in modern PHP 8
+			$wpdb->query( $wpdb->prepare( $query, ...$values ) );
 		}
-
-		// Sauvegarde de la classe ciblée via add_post_meta (demande explicite)
-		add_post_meta( $post_id, '_ceb_eleve_classe_cible', $classe_cible );
 
 		// Invalidation du cache post meta
 		if ( function_exists( 'clean_post_cache' ) ) {
