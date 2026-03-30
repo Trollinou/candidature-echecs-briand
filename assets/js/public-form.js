@@ -96,6 +96,35 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		radio.addEventListener( 'change', toggleMotivationFields );
 	} );
 
+	// Formatage des Téléphones
+	const formatPhone = ( event ) => {
+		if ( event.target && event.target.value ) {
+			// Supprime tout caractère qui n'est pas un chiffre
+			let value = event.target.value.replace( /\D/g, '' );
+
+			// Limite la longueur à 10 chiffres
+			value = value.substring( 0, 10 );
+
+			// Formate visuellement (ex: 01 23 45 67 89)
+			const match = value.match( /.{1,2}/g );
+			if ( match ) {
+				event.target.value = match.join( ' ' );
+			} else {
+				event.target.value = value;
+			}
+		}
+	};
+
+	const telRep = document.getElementById( 'ceb_legal_tel' );
+	const telRep2 = document.getElementById( 'ceb_legal2_tel' );
+
+	if ( telRep ) {
+		telRep.addEventListener( 'input', formatPhone );
+	}
+	if ( telRep2 ) {
+		telRep2.addEventListener( 'input', formatPhone );
+	}
+
 	// Initialisation
 	toggleMotivationFields();
 } );

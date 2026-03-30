@@ -31,6 +31,46 @@ class Handler {
 		$classe       = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
 		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe_cible'] ) ) : '';
 
+		// Validation de l'âge
+		if ( isset( $_POST['ceb_eleve_ddn'] ) ) {
+			$ddn = sanitize_text_field( wp_unslash( $_POST['ceb_eleve_ddn'] ) );
+			$ddn_datetime = new \DateTime( $ddn );
+			$now = new \DateTime();
+			$age = $now->diff( $ddn_datetime )->y;
+
+			if ( $age < 7 || $age > 17 ) {
+				$redirect_url = wp_get_referer() ?: home_url();
+				$redirect_url = add_query_arg( 'ceb_error', 'age', $redirect_url );
+				wp_safe_redirect( $redirect_url );
+				exit;
+			}
+		}
+
+		// Validation et formatage du téléphone principal (ceb_legal_tel)
+		$legal_tel = '';
+		if ( isset( $_POST['ceb_legal_tel'] ) ) {
+			$raw_tel = str_replace( ' ', '', sanitize_text_field( wp_unslash( $_POST['ceb_legal_tel'] ) ) );
+			if ( preg_match( '/^\d{10}$/', $raw_tel ) ) {
+				$legal_tel = wordwrap( $raw_tel, 2, ' ', true );
+			} else {
+				$redirect_url = wp_get_referer() ?: home_url();
+				$redirect_url = add_query_arg( 'ceb_error', 'tel', $redirect_url );
+				wp_safe_redirect( $redirect_url );
+				exit;
+			}
+		}
+
+		// Validation et formatage du téléphone secondaire (ceb_legal2_tel)
+		$legal2_tel = '';
+		if ( ! empty( $_POST['ceb_legal2_tel'] ) ) {
+			$raw_tel2 = str_replace( ' ', '', sanitize_text_field( wp_unslash( $_POST['ceb_legal2_tel'] ) ) );
+			if ( preg_match( '/^\d{10}$/', $raw_tel2 ) ) {
+				$legal2_tel = wordwrap( $raw_tel2, 2, ' ', true );
+			}
+			// Si invalide, on peut soit ignorer soit bloquer. La demande ne spécifie pas de bloquer pour legal2_tel.
+			// Conservons la valeur vide si invalide, car il est optionnel.
+		}
+
 		// Logique de rentrée
 		$current_month = (int) wp_date( 'n' );
 		$current_year  = (int) wp_date( 'Y' );
@@ -72,7 +112,7 @@ class Handler {
 			'_ceb_legal_cplt'          => isset( $_POST['ceb_legal_cplt'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_cplt'] ) ) : '',
 			'_ceb_legal_cp'            => isset( $_POST['ceb_legal_cp'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_cp'] ) ) : '',
 			'_ceb_legal_ville'         => isset( $_POST['ceb_legal_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal_ville'] ) ) ) : '',
-			'_ceb_legal_tel'           => isset( $_POST['ceb_legal_tel'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_tel'] ) ) : '',
+			'_ceb_legal_tel'           => $legal_tel,
 			'_ceb_legal_email'         => isset( $_POST['ceb_legal_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal_email'] ) ) : '',
 
 			'_ceb_legal2_nom'          => isset( $_POST['ceb_legal2_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_nom'] ) ) ) : '',
@@ -82,7 +122,7 @@ class Handler {
 			'_ceb_legal2_cplt'         => isset( $_POST['ceb_legal2_cplt'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cplt'] ) ) : '',
 			'_ceb_legal2_cp'           => isset( $_POST['ceb_legal2_cp'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cp'] ) ) : '',
 			'_ceb_legal2_ville'        => isset( $_POST['ceb_legal2_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_ville'] ) ) ) : '',
-			'_ceb_legal2_tel'          => isset( $_POST['ceb_legal2_tel'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_tel'] ) ) : '',
+			'_ceb_legal2_tel'          => $legal2_tel,
 			'_ceb_legal2_email'        => isset( $_POST['ceb_legal2_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal2_email'] ) ) : '',
 
 			'_ceb_echecs_debut'        => isset( $_POST['ceb_echecs_debut'] ) ? absint( $_POST['ceb_echecs_debut'] ) : '',
@@ -207,7 +247,7 @@ class Handler {
 		$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cplt'] ) ? (string) $meta_mapping['_ceb_legal_cplt'] : '' ) . "</li>";
 		$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cp'] ) ? (string) $meta_mapping['_ceb_legal_cp'] : '' ) . "</li>";
 		$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_ville'] ) . "</li>";
-		$message .= "<li><strong>Téléphone :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_tel'] ) ? (string) $meta_mapping['_ceb_legal_tel'] : '' ) . "</li>";
+		$message .= "<li><strong>Téléphone :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_tel'] ) . "</li>";
 		$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '' ) . "</li>";
 		$message .= "</ul>";
 
@@ -221,7 +261,7 @@ class Handler {
 			$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cplt'] ) ? (string) $meta_mapping['_ceb_legal2_cplt'] : '' ) . "</li>";
 			$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cp'] ) ? (string) $meta_mapping['_ceb_legal2_cp'] : '' ) . "</li>";
 			$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_ville'] ) . "</li>";
-			$message .= "<li><strong>Téléphone :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_tel'] ) ? (string) $meta_mapping['_ceb_legal2_tel'] : '' ) . "</li>";
+			$message .= "<li><strong>Téléphone :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_tel'] ) . "</li>";
 			$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_email'] ) ? (string) $meta_mapping['_ceb_legal2_email'] : '' ) . "</li>";
 			$message .= "</ul>";
 		}
@@ -247,6 +287,8 @@ class Handler {
 			$message .= "<li><strong>Texte de motivation :</strong><br>" . wp_kses_post( $motivation_texte ) . "</li>";
 		}
 		$message .= "</ul>";
+
+		$message .= "<p><strong>Attention :</strong> Si le collège Briand de Lons-le-Saunier n'est pas votre collège de secteur, nous vous rappelons que vous devez effectuer une 'Demande de dérogation' auprès de la 'Direction des services départementaux de l'Éducation nationale (DSDEN) du Jura — Division élèves, familles et second degré' en appelant le 03 84 87 27 39.</p>";
 
 		$message .= "<p>Cordialement,<br>L'équipe de la section Échecs</p>";
 
