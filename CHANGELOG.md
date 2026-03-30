@@ -10,5 +10,5 @@ et ce projet adhère au [Gestion sémantique de version](https://semver.org/spec
 ### Ajouté
 - **CPT `ceb_candidature`** : Ajout d'un type de publication personnalisé (Custom Post Type) privé pour gérer de manière isolée et sécurisée les candidatures reçues.
 - **Formulaire d'inscription front-end** : Ajout d'un formulaire public permettant aux futurs élèves de soumettre leur dossier de candidature en ligne via le shortcode `[ceb_formulaire_candidature]`.
-- **Gestion des uploads de motivation** : Implémentation de la gestion sécurisée des uploads de fichiers de motivation avec validation stricte des extensions autorisées (pdf, doc, docx).
+- **Gestion des uploads de motivation** : Implémentation de la gestion sécurisée des uploads de fichiers de motivation avec validation stricte des extensions autorisées (pdf, doc, docx, oft, rtf).
 - **Metaboxes de consultation back-office** : Ajout de métaboîtes (Metaboxes) en lecture seule dans l'administration de WordPress permettant au personnel de consulter de manière claire et structurée les dossiers de candidatures.
