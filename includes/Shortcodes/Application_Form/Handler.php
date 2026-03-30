@@ -26,9 +26,10 @@ class Handler {
 			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );
 		}
 
-		$nom       = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_nom'] ) ) ) : '';
-		$prenom    = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
-		$classe    = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
+		$nom          = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_nom'] ) ) ) : '';
+		$prenom       = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
+		$classe       = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
+		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe_cible'] ) ) : '';
 
 		// Logique de rentrée
 		$current_month = (int) date( 'n' );
@@ -139,10 +140,33 @@ class Handler {
 			$wpdb->query( $wpdb->prepare( $query, $values ) );
 		}
 
+		// Sauvegarde de la classe ciblée via add_post_meta (demande explicite)
+		add_post_meta( $post_id, '_ceb_eleve_classe_cible', $classe_cible );
+
 		// Invalidation du cache post meta
 		if ( function_exists( 'clean_post_cache' ) ) {
 			clean_post_cache( $post_id );
 		}
+
+		// Envoi de l'email de confirmation
+		$legal_email = isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '';
+		$to          = [];
+		if ( is_email( $legal_email ) ) {
+			$to[] = $legal_email;
+		}
+		$to[] = 'contact@echiquier-ledonien.fr';
+
+		$subject = sprintf( 'Nouvelle Candidature %s - Classe %s - %s %s', $target_year, $classe_cible, $nom, $prenom );
+
+		$message  = "Bonjour,\n\n";
+		$message .= "Nous vous confirmons la réception d'une nouvelle candidature pour la section Échecs.\n\n";
+		$message .= "Récapitulatif :\n";
+		$message .= "- Élève : " . $nom . " " . $prenom . "\n";
+		$message .= "- Classe demandée à la rentrée " . $target_year . " : " . $classe_cible . "\n";
+		$message .= "- Établissement actuel : " . ( isset( $meta_mapping['_ceb_eleve_ecole'] ) ? (string) $meta_mapping['_ceb_eleve_ecole'] : '' ) . "\n\n";
+		$message .= "Cordialement,\nL'équipe de la section Échecs";
+
+		wp_mail( $to, $subject, $message );
 
 		// Redirection
 		$redirect_url = wp_get_referer() ?: home_url();
