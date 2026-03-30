@@ -162,7 +162,7 @@ class Render {
 					<legend>3. Parcours échiquéen</legend>
 
 					<div class="form-row">
-						<label for="ceb_echecs_debut">Année de début <span class="required">*</span></label>
+						<label for="ceb_echecs_debut">Année de début des Échecs <span class="required">*</span></label>
 						<input type="number" id="ceb_echecs_debut" name="ceb_echecs_debut" min="2000" max="<?php echo date('Y'); ?>" required>
 					</div>
 
@@ -195,7 +195,7 @@ class Render {
 					</div>
 
 					<div class="form-row">
-						<label for="ceb_echecs_competitions">Compétitions (Optionnel)</label>
+						<label for="ceb_echecs_competitions">Principales compétitions effectuées(Optionnel)</label>
 						<?php
 						wp_editor( '', 'ceb_echecs_competitions', [
 							'media_buttons' => false,
@@ -208,7 +208,7 @@ class Render {
 					</div>
 
 					<div class="form-row">
-						<label for="ceb_echecs_titres">Titres notables (Optionnel)</label>
+						<label for="ceb_echecs_titres">Titres notables obtenus (Optionnel)</label>
 						<?php
 						wp_editor( '', 'ceb_echecs_titres', [
 							'media_buttons' => false,
@@ -222,7 +222,7 @@ class Render {
 
 					<!-- Motivation (Fichier ou Texte) -->
 					<div class="form-row">
-						<label>Format de la motivation <span class="required">*</span></label>
+						<label>Lettre de motivation <span class="required">*</span></label>
 						<div class="radio-group">
 							<label><input type="radio" name="ceb_motivation_type" value="fichier" checked required> Joindre un fichier</label>
 							<label><input type="radio" name="ceb_motivation_type" value="texte" required> Rédiger ici</label>
@@ -230,8 +230,8 @@ class Render {
 					</div>
 
 					<div class="form-row" id="ceb_motivation_fichier_wrap">
-						<label for="ceb_motivation_fichier">Fichier de motivation (PDF, DOC, DOCX) <span class="required">*</span></label>
-						<input type="file" id="ceb_motivation_fichier" name="ceb_motivation_fichier" accept=".pdf,.doc,.docx" required>
+						<label for="ceb_motivation_fichier">Fichier de motivation (PDF, DOC, DOCX, ODT, RTF) <span class="required">*</span></label>
+						<input type="file" id="ceb_motivation_fichier" name="ceb_motivation_fichier" accept=".pdf,.doc,.docx,.odt,.rtf" required>
 					</div>
 
 					<div class="form-row" id="ceb_motivation_texte_wrap" style="display:none;">
