@@ -45,7 +45,7 @@ spl_autoload_register( function ( $class ) {
 /**
  * Initialisation du Plugin
  */
-function ceb_run_plugin() {
+function ceb_run_plugin(): void {
 	$cpt_candidature = new \CEB\CPT\Candidature();
 	$cpt_candidature->init();
 

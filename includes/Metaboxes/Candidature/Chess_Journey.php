@@ -3,11 +3,11 @@ namespace CEB\Metaboxes\Candidature;
 
 class Chess_Journey {
 
-	public function init() {
+	public function init(): void {
 		add_action( 'add_meta_boxes', [ $this, 'add_box' ] );
 	}
 
-	public function add_box() {
+	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_chess',
 			'3. Parcours échiquéen & Motivation',
@@ -18,14 +18,17 @@ class Chess_Journey {
 		);
 	}
 
-	public function render( $post ) {
-		$debut        = get_post_meta( $post->ID, '_ceb_echecs_debut', true );
-		$club         = get_post_meta( $post->ID, '_ceb_echecs_club', true );
-		$niveau       = get_post_meta( $post->ID, '_ceb_echecs_niveau', true );
-		$competitions = get_post_meta( $post->ID, '_ceb_echecs_competitions', true );
-		$titres       = get_post_meta( $post->ID, '_ceb_echecs_titres', true );
+	/**
+	 * @param \WP_Post $post
+	 */
+	public function render( \WP_Post $post ): void {
+		$debut        = (string) get_post_meta( $post->ID, '_ceb_echecs_debut', true );
+		$club         = (string) get_post_meta( $post->ID, '_ceb_echecs_club', true );
+		$niveau       = (string) get_post_meta( $post->ID, '_ceb_echecs_niveau', true );
+		$competitions = (string) get_post_meta( $post->ID, '_ceb_echecs_competitions', true );
+		$titres       = (string) get_post_meta( $post->ID, '_ceb_echecs_titres', true );
 
-		$motivation_type = get_post_meta( $post->ID, '_ceb_motivation_type', true );
+		$motivation_type = (string) get_post_meta( $post->ID, '_ceb_motivation_type', true );
 		?>
 		<div class="ceb-metabox-content">
 			<p style="margin: 4px 0;"><strong>Année de début :</strong> <?php echo esc_html( $debut ); ?></p>
@@ -48,7 +51,7 @@ class Chess_Journey {
 			<div style="margin-left: 10px; margin-bottom: 8px;">
 				<?php if ( 'fichier' === $motivation_type ) : ?>
 					<?php
-					$fichier_id = get_post_meta( $post->ID, '_ceb_motivation_fichier_id', true );
+					$fichier_id = (int) get_post_meta( $post->ID, '_ceb_motivation_fichier_id', true );
 					if ( $fichier_id ) {
 						$url = wp_get_attachment_url( $fichier_id );
 						if ( $url ) {
@@ -65,7 +68,7 @@ class Chess_Journey {
 					?>
 				<?php elseif ( 'texte' === $motivation_type ) : ?>
 					<?php
-					$texte = get_post_meta( $post->ID, '_ceb_motivation_texte', true );
+					$texte = (string) get_post_meta( $post->ID, '_ceb_motivation_texte', true );
 					if ( $texte ) {
 						echo wp_kses_post( wpautop( $texte ) );
 					} else {

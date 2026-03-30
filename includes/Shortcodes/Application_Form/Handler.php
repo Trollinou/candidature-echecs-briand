@@ -3,13 +3,13 @@ namespace CEB\Shortcodes\Application_Form;
 
 class Handler {
 
-	public function init() {
+	public function init(): void {
 		add_action( 'admin_post_nopriv_ceb_submit_application', [ $this, 'process_form' ] );
 		add_action( 'admin_post_ceb_submit_application', [ $this, 'process_form' ] );
 	}
 
-	public function process_form() {
-		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( $_POST['ceb_application_nonce'], 'ceb_submit_application' ) ) {
+	public function process_form(): void {
+		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ceb_application_nonce'] ) ), 'ceb_submit_application' ) ) {
 			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );
 		}
 
@@ -36,7 +36,7 @@ class Handler {
 			'post_status' => 'publish',
 		] );
 
-		if ( is_wp_error( $post_id ) || $post_id === 0 ) {
+		if ( $post_id === 0 ) {
 			wp_die( 'Erreur lors de la création de la candidature.' );
 		}
 

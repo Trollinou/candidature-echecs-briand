@@ -1,0 +1,141 @@
+> phpstan analyze
+Note: Using configuration file /app/phpstan.neon.
+  0/17 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[1G[2K 17/17 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ ------ ---------------------------------------------------------
+  Line   candidature-echecs-briand.php
+ ------ ---------------------------------------------------------
+  48     Function ceb_run_plugin() has no return type specified.
+         🪪  missingType.return
+ ------ ---------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------
+  Line   includes/CPT/Candidature.php
+ ------ ---------------------------------------------------------------------
+  6      Method CEB\CPT\Candidature::init() has no return type specified.
+         🪪  missingType.return
+  12     Method CEB\CPT\Candidature::register_cpt() has no return type
+         specified.
+         🪪  missingType.return
+  41     Method CEB\CPT\Candidature::set_custom_columns() has no return type
+         specified.
+         🪪  missingType.return
+  41     Method CEB\CPT\Candidature::set_custom_columns() has parameter
+         $columns with no type specified.
+         🪪  missingType.parameter
+  52     Method CEB\CPT\Candidature::render_custom_columns() has no return
+         type specified.
+         🪪  missingType.return
+  52     Method CEB\CPT\Candidature::render_custom_columns() has parameter
+         $column with no type specified.
+         🪪  missingType.parameter
+  52     Method CEB\CPT\Candidature::render_custom_columns() has parameter
+         $post_id with no type specified.
+         🪪  missingType.parameter
+ ------ ---------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------
+  Line   includes/Metaboxes/Candidature/Chess_Journey.php
+ ------ ----------------------------------------------------------------------
+  6      Method CEB\Metaboxes\Candidature\Chess_Journey::init() has no return
+         type specified.
+         🪪  missingType.return
+  10     Method CEB\Metaboxes\Candidature\Chess_Journey::add_box() has no
+         return type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Chess_Journey::render() has no
+         return type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Chess_Journey::render() has
+         parameter $post with no type specified.
+         🪪  missingType.parameter
+ ------ ----------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------
+  Line   includes/Metaboxes/Candidature/Identity.php
+ ------ ----------------------------------------------------------------------
+  6      Method CEB\Metaboxes\Candidature\Identity::init() has no return type
+         specified.
+         🪪  missingType.return
+  10     Method CEB\Metaboxes\Candidature\Identity::add_box() has no return
+         type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Identity::render() has no return
+         type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Identity::render() has parameter
+         $post with no type specified.
+         🪪  missingType.parameter
+ ------ ----------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------
+  Line   includes/Metaboxes/Candidature/Legal_Rep.php
+ ------ -----------------------------------------------------------------------
+  6      Method CEB\Metaboxes\Candidature\Legal_Rep::init() has no return type
+         specified.
+         🪪  missingType.return
+  10     Method CEB\Metaboxes\Candidature\Legal_Rep::add_box() has no return
+         type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Legal_Rep::render() has no return
+         type specified.
+         🪪  missingType.return
+  21     Method CEB\Metaboxes\Candidature\Legal_Rep::render() has parameter
+         $post with no type specified.
+         🪪  missingType.parameter
+ ------ -----------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------
+  Line   includes/Shortcodes/Application_Form/Handler.php
+ ------ -----------------------------------------------------------------------
+  6      Method CEB\Shortcodes\Application_Form\Handler::init() has no return
+         type specified.
+         🪪  missingType.return
+  11     Method CEB\Shortcodes\Application_Form\Handler::process_form() has no
+         return type specified.
+         🪪  missingType.return
+  39     Call to function is_wp_error() with int<0, max> will always evaluate
+         to false.
+         🪪  function.impossibleType
+         💡  Because the type is coming from a PHPDoc, you can turn off this
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo
+         n.
+ ------ -----------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------
+  Line   includes/Shortcodes/Application_Form/Manager.php
+ ------ ----------------------------------------------------------------------
+  6      Method CEB\Shortcodes\Application_Form\Manager::init() has no return
+         type specified.
+         🪪  missingType.return
+  15     Method CEB\Shortcodes\Application_Form\Manager::enqueue_assets() has
+         no return type specified.
+         🪪  missingType.return
+  20     Constant CEB_URL not found.
+         🪪  constant.notFound
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols
+  26     Constant CEB_URL not found.
+         🪪  constant.notFound
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols
+  33     Method CEB\Shortcodes\Application_Form\Manager::render_shortcode()
+         has no return type specified.
+         🪪  missingType.return
+  33     Method CEB\Shortcodes\Application_Form\Manager::render_shortcode()
+         has parameter $atts with no type specified.
+         🪪  missingType.parameter
+ ------ ----------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------
+  Line   includes/Shortcodes/Application_Form/Render.php
+ ------ ---------------------------------------------------------------------
+  6      Method CEB\Shortcodes\Application_Form\Render::display() has no
+         return type specified.
+         🪪  missingType.return
+  12     Method CEB\Shortcodes\Application_Form\Render::render_html() has no
+         return type specified.
+         🪪  missingType.return
+ ------ ---------------------------------------------------------------------
+
+ [ERROR] Found 31 errors
+
+Script phpstan analyze handling the lint:php event returned with error code 1
