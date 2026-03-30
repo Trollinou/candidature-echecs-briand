@@ -249,15 +249,16 @@ parameters:
 ```
 
 **2. `.eslintrc.json` (ES2021 + WP)**
-```
-
+```json
 {
-"env": { "browser": true, "es2021": true, "wordpress": true },
-"parserOptions": { "ecmaVersion": 2021, "sourceType": "module" },
-"extends": [ "eslint:recommended", "plugin:@wordpress/recommended" ],
-"ignorePatterns": [ "node_modules/", "vendor/", "build/", "includes/lib/" ]
+  "env": { "browser": true, "es2021": true },
+  "globals": {
+    "wp": "readonly"
+  },
+  "parserOptions": { "ecmaVersion": 2021, "sourceType": "module" },
+  "extends": [ "eslint:recommended", "plugin:@wordpress/recommended" ],
+  "ignorePatterns": [ "node_modules/", "vendor/", "build/", "includes/lib/" ]
 }
-
 ```
 
 ### Installation Automatisée (Si nécessaire)
