@@ -170,9 +170,16 @@ class Render {
 						<label for="ceb_echecs_club">Club actuel (Optionnel)</label>
 						<input type="text" id="ceb_echecs_club" name="ceb_echecs_club" list="clubs-region">
 						<datalist id="clubs-region">
-							<option value="Club Échecs Briand">
-							<option value="Échiquier de la Ville">
-							<option value="Tour et Cavaliers">
+							<option value="Echiquier Ledonien">
+							<option value="Ecole d'echecs ledonienne">
+							<option value="Le Cavalier Bayard">
+							<option value="Tour Prends Garde! Besancon">
+							<option value="Echiquier Bisontin">
+							<option value="Roi Blanc Montbeliard">
+							<option value="Le Pion Tissalien Echecs">
+							<option value="BelfortEchecs - AEAU">
+							<option value="Cercle d'Echecs de Valdoie">
+							<option value="Louhans Chateaurenaud Echecs">
 						</datalist>
 					</div>
 
