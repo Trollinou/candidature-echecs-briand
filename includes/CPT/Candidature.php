@@ -65,7 +65,7 @@ class Candidature {
 		$new_columns['cb'] = $columns['cb'];
 		$new_columns['title'] = 'Candidat';
 		$new_columns['rentree'] = 'Rentrée';
-		$new_columns['classe'] = 'Classe demandée';
+		$new_columns['classe'] = 'Classe actuelle';
 		$new_columns['classe_cible'] = 'Classe ciblée';
 		$new_columns['niveau'] = 'Niveau Échecs';
 		$new_columns['date'] = $columns['date'];
