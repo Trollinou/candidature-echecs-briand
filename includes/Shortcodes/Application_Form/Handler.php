@@ -134,7 +134,7 @@ class Handler {
 			$values[] = $meta_value;
 		}
 
-		if ( ! empty( $values ) ) {
+		if ( count( $values ) > 0 ) {
 			$query = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ', ', $placeholders );
 			$wpdb->query( $wpdb->prepare( $query, $values ) );
 		}

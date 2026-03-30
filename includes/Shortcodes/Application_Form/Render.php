@@ -101,6 +101,17 @@ class Render {
 							<option value="Autre">Autre</option>
 						</select>
 					</div>
+
+					<div class="form-row">
+						<label for="ceb_eleve_classe_cible">Classe ciblée à la rentrée <span class="required">*</span></label>
+						<select id="ceb_eleve_classe_cible" name="ceb_eleve_classe_cible" required>
+							<option value="">Sélectionnez...</option>
+							<option value="6ème">6ème</option>
+							<option value="5ème">5ème</option>
+							<option value="4ème">4ème</option>
+							<option value="3ème">3ème</option>
+						</select>
+					</div>
 				</fieldset>
 
 				<!-- 2. Représentant légal -->

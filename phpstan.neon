@@ -2,16 +2,14 @@ includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
     level: 6
+    treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - candidature-echecs-briand.php
     paths:
         - .
-    bootstrapFiles:
-        - candidature-echecs-briand.php
     excludePaths:
         - node_modules/
         - vendor/
         - build/
         - src/
         - includes/lib/
-        

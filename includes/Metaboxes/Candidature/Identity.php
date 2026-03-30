@@ -45,7 +45,8 @@ class Identity {
 		$ecole  = (string) get_post_meta( $post->ID, '_ceb_eleve_ecole', true );
 		$classe = (string) get_post_meta( $post->ID, '_ceb_eleve_classe', true );
 		$lv1    = (string) get_post_meta( $post->ID, '_ceb_eleve_lv1', true );
-		$lv2    = (string) get_post_meta( $post->ID, '_ceb_eleve_lv2', true );
+		$lv2          = (string) get_post_meta( $post->ID, '_ceb_eleve_lv2', true );
+		$classe_cible = (string) get_post_meta( $post->ID, '_ceb_eleve_classe_cible', true );
 
 		$ddn_formattee = $ddn ? wp_date( 'd/m/Y', (int) strtotime( $ddn ) ) : '';
 		?>
@@ -58,6 +59,7 @@ class Identity {
 			<p style="margin: 4px 0;"><strong>Classe :</strong> <?php echo esc_html( $classe ); ?></p>
 			<p style="margin: 4px 0;"><strong>LV1 :</strong> <?php echo esc_html( $lv1 ); ?></p>
 			<p style="margin: 4px 0;"><strong>LV2 :</strong> <?php echo esc_html( $lv2 ); ?></p>
+			<p style="margin: 4px 0;"><strong>Classe ciblée à la rentrée :</strong> <?php echo esc_html( $classe_cible ); ?></p>
 		</div>
 		<?php
 	}
