@@ -176,7 +176,9 @@ class Handler {
 		$message .= "<ul>";
 		$message .= "<li><strong>Nom :</strong> " . esc_html( $nom ) . "</li>";
 		$message .= "<li><strong>Prénom :</strong> " . esc_html( $prenom ) . "</li>";
-		$message .= "<li><strong>Date de naissance :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_ddn'] ) ? (string) $meta_mapping['_ceb_eleve_ddn'] : '' ) . "</li>";
+		$ddn_raw = isset( $meta_mapping['_ceb_eleve_ddn'] ) ? (string) $meta_mapping['_ceb_eleve_ddn'] : '';
+		$ddn_formatted = $ddn_raw ? wp_date( 'd/m/Y', strtotime( $ddn_raw ) ) : '';
+		$message .= "<li><strong>Date de naissance :</strong> " . esc_html( $ddn_formatted ) . "</li>";
 		$message .= "<li><strong>Sexe :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_sexe'] ) ? (string) $meta_mapping['_ceb_eleve_sexe'] : '' ) . "</li>";
 		$message .= "<li><strong>Établissement actuel :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_ecole'] ) ? (string) $meta_mapping['_ceb_eleve_ecole'] : '' ) . "</li>";
 		$message .= "<li><strong>Classe actuelle :</strong> " . esc_html( $classe ) . "</li>";
@@ -206,17 +208,17 @@ class Handler {
 
 		$echecs_competitions = isset( $meta_mapping['_ceb_echecs_competitions'] ) ? (string) $meta_mapping['_ceb_echecs_competitions'] : '';
 		if ( ! empty( $echecs_competitions ) ) {
-			$message .= "<li><strong>Principales compétitions effectuées :</strong><br>" . nl2br( esc_html( $echecs_competitions ) ) . "</li>";
+			$message .= "<li><strong>Principales compétitions effectuées :</strong><br>" . wp_kses_post( $echecs_competitions ) . "</li>";
 		}
 
 		$echecs_titres = isset( $meta_mapping['_ceb_echecs_titres'] ) ? (string) $meta_mapping['_ceb_echecs_titres'] : '';
 		if ( ! empty( $echecs_titres ) ) {
-			$message .= "<li><strong>Titres notables obtenus :</strong><br>" . nl2br( esc_html( $echecs_titres ) ) . "</li>";
+			$message .= "<li><strong>Titres notables obtenus :</strong><br>" . wp_kses_post( $echecs_titres ) . "</li>";
 		}
 
 		if ( 'texte' === $motivation_type ) {
 			$motivation_texte = isset( $meta_mapping['_ceb_motivation_texte'] ) ? (string) $meta_mapping['_ceb_motivation_texte'] : '';
-			$message .= "<li><strong>Texte de motivation :</strong><br>" . nl2br( esc_html( $motivation_texte ) ) . "</li>";
+			$message .= "<li><strong>Texte de motivation :</strong><br>" . wp_kses_post( $motivation_texte ) . "</li>";
 		}
 		$message .= "</ul>";
 
