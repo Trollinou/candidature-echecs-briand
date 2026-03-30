@@ -28,6 +28,19 @@ class Render {
 			<?php if ( isset( $_GET['success'] ) && '1' === $_GET['success'] ) : ?>
 				<div class="notice notice-success is-dismissible" style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border: 1px solid #c3e6cb; border-radius: 4px;">
 					<p><strong>Candidature envoyée avec succès !</strong> Nous avons bien reçu vos informations.</p>
+					<p><strong>Attention :</strong> Si le collège Briand de Lons-le-Saunier n'est pas votre collège de secteur, nous vous rappelons que vous devez effectuer une 'Demande de dérogation' auprès de la 'Direction des services départementaux de l'Éducation nationale (DSDEN) du Jura — Division élèves, familles et second degré' en appelant le 03 84 87 27 39.</p>
+				</div>
+			<?php endif; ?>
+
+			<?php if ( isset( $_GET['ceb_error'] ) ) : ?>
+				<div class="notice notice-error is-dismissible" style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border: 1px solid #f5c6cb; border-radius: 4px;">
+					<?php if ( 'age' === $_GET['ceb_error'] ) : ?>
+						<p><strong>Erreur :</strong> L'âge du candidat doit être compris entre 7 et 17 ans.</p>
+					<?php elseif ( 'tel' === $_GET['ceb_error'] ) : ?>
+						<p><strong>Erreur :</strong> Le numéro de téléphone du représentant légal est invalide. Il doit comporter 10 chiffres.</p>
+					<?php else : ?>
+						<p><strong>Erreur :</strong> Une erreur est survenue lors de la soumission de votre candidature. Veuillez vérifier vos informations.</p>
+					<?php endif; ?>
 				</div>
 			<?php endif; ?>
 
