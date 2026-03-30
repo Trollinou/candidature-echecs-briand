@@ -125,6 +125,154 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		telRep2.addEventListener( 'input', formatPhone );
 	}
 
+	// Validation de l'âge (entre 7 et 17 ans)
+	const ddnEleve = document.getElementById( 'ceb_eleve_ddn' );
+	if ( ddnEleve ) {
+		const validateAge = ( event ) => {
+			const ddn = event.target.value;
+			if ( ! ddn ) {
+				event.target.setCustomValidity( '' );
+				return;
+			}
+
+			const birthDate = new Date( ddn );
+			const today = new Date();
+			let age = today.getFullYear() - birthDate.getUTCFullYear();
+			const m = today.getMonth() - birthDate.getUTCMonth();
+			if (
+				m < 0 ||
+				( m === 0 && today.getDate() < birthDate.getUTCDate() )
+			) {
+				age--;
+			}
+
+			if ( age < 7 || age > 17 ) {
+				event.target.setCustomValidity(
+					"L'âge du candidat doit être compris entre 7 et 17 ans."
+				);
+				event.target.reportValidity();
+			} else {
+				event.target.setCustomValidity( '' );
+			}
+		};
+
+		ddnEleve.addEventListener( 'blur', validateAge );
+		ddnEleve.addEventListener( 'change', validateAge );
+	}
+
+	// Sauvegarde et restauration des données du formulaire via sessionStorage
+	const form = document.getElementById( 'ceb-application-form' );
+	if ( form ) {
+		const storageKey = 'ceb_application_form_data';
+
+		// Fonction pour sauvegarder les données
+		const saveFormData = () => {
+			const formData = new FormData( form );
+			const data = {};
+			for ( const [ key, value ] of formData.entries() ) {
+				// Ne pas sauvegarder les champs de type fichier et nonces/action
+				const input = form.elements[ key ];
+				if (
+					input &&
+					input.type !== 'file' &&
+					input.type !== 'hidden' &&
+					key !== 'ceb_application_nonce'
+				) {
+					data[ key ] = value;
+				}
+			}
+			sessionStorage.setItem( storageKey, JSON.stringify( data ) );
+		};
+
+		// Fonction pour restaurer les données
+		const restoreFormData = () => {
+			const savedData = sessionStorage.getItem( storageKey );
+			if ( savedData ) {
+				try {
+					const data = JSON.parse( savedData );
+					for ( const key in data ) {
+						if (
+							Object.prototype.hasOwnProperty.call( data, key )
+						) {
+							const inputs = form.elements[ key ];
+							if ( inputs ) {
+								if (
+									inputs instanceof RadioNodeList ||
+									( inputs.length &&
+										inputs[ 0 ].type === 'radio' )
+								) {
+									// C'est un groupe de boutons radio
+									for ( let i = 0; i < inputs.length; i++ ) {
+										if (
+											inputs[ i ].value === data[ key ]
+										) {
+											inputs[ i ].checked = true;
+											break;
+										}
+									}
+								} else {
+									// C'est un champ simple
+									inputs.value = data[ key ];
+								}
+							}
+						}
+					}
+					// Mettre à jour l'affichage conditionnel après restauration
+					toggleMotivationFields();
+				} catch ( e ) {
+					// Ignorer les erreurs de parsing
+				}
+			}
+		};
+
+		// Vérifier si la soumission a réussi pour vider le sessionStorage
+		const urlParams = new URLSearchParams( window.location.search );
+		if ( urlParams.get( 'success' ) === '1' ) {
+			sessionStorage.removeItem( storageKey );
+		} else {
+			// Restaurer les données au chargement si on n'est pas sur la page de succès
+			restoreFormData();
+		}
+
+		// Sauvegarder à chaque modification
+		form.addEventListener( 'input', saveFormData );
+		form.addEventListener( 'change', saveFormData );
+
+		// Prévenir les échecs silencieux de la validation HTML5
+		form.addEventListener(
+			'invalid',
+			( event ) => {
+				const target = event.target;
+				if ( target ) {
+					// Trouver l'élément visible le plus proche si l'élément invalide est caché (ex. champs de motivation cachés)
+					if ( target.offsetParent === null ) {
+						// Si l'élément invalide est un champ de fichier caché par exemple
+						toggleMotivationFields();
+					}
+
+					// Assurez-vous que le message est affiché via le navigateur
+					// focus() permet généralement de scroller vers le champ
+					setTimeout( () => {
+						target.focus();
+					}, 100 );
+				}
+			},
+			true
+		); // capture phase pour intercepter tous les événements 'invalid'
+
+		// Ajouter un écouteur de soumission pour valider explicitement avant
+		form.addEventListener( 'submit', ( event ) => {
+			if ( ddnEleve ) {
+				// Re-déclencher la validation de l'âge à la soumission pour s'assurer qu'elle est évaluée
+				const validateAgeOnSubmit = new Event( 'change' );
+				ddnEleve.dispatchEvent( validateAgeOnSubmit );
+				if ( ! form.checkValidity() ) {
+					event.preventDefault();
+				}
+			}
+		} );
+	}
+
 	// Initialisation
 	toggleMotivationFields();
 } );
