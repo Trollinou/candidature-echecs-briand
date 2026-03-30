@@ -17,6 +17,7 @@ class Candidature {
 		add_action( 'manage_ceb_candidature_posts_custom_column', [ $this, 'render_custom_columns' ], 10, 2 );
 		add_action( 'restrict_manage_posts', [ $this, 'restrict_manage_posts' ] );
 		add_action( 'pre_get_posts', [ $this, 'filter_by_year' ] );
+		add_action( 'before_delete_post', [ $this, 'delete_associated_file' ] );
 	}
 
 	/**
@@ -169,6 +170,24 @@ class Candidature {
 			];
 
 			$query->set( 'meta_query', $meta_query );
+		}
+	}
+
+	/**
+	 * Supprime physiquement le fichier de motivation attaché lors de la suppression de la candidature.
+	 *
+	 * @param int $post_id L'ID de la publication en cours de suppression.
+	 * @return void
+	 */
+	public function delete_associated_file( int $post_id ): void {
+		if ( 'ceb_candidature' !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		$attachment_id = get_post_meta( $post_id, '_ceb_motivation_fichier_id', true );
+
+		if ( ! empty( $attachment_id ) ) {
+			wp_delete_attachment( (int) $attachment_id, true );
 		}
 	}
 }
