@@ -64,6 +64,7 @@ class Candidature {
 		$new_columns = [];
 		$new_columns['cb'] = $columns['cb'];
 		$new_columns['title'] = 'Candidat';
+		$new_columns['email'] = 'Email';
 		$new_columns['rentree'] = 'Rentrée';
 		$new_columns['classe'] = 'Classe actuelle';
 		$new_columns['classe_cible'] = 'Classe ciblée';
@@ -81,6 +82,12 @@ class Candidature {
 	 */
 	public function render_custom_columns( string $column, int $post_id ): void {
 		switch ( $column ) {
+			case 'email':
+				$email = get_post_meta( $post_id, '_ceb_legal_email', true );
+				if ( $email ) {
+					printf( '<a href="mailto:%1$s">%1$s</a>', esc_html( (string) $email ) );
+				}
+				break;
 			case 'rentree':
 				echo esc_html( (string) get_post_meta( $post_id, '_ceb_target_year', true ) );
 				break;

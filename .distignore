@@ -11,3 +11,5 @@ vendor
 src
 assets/scss
 tests
+.DS_Store
+phpstan.log

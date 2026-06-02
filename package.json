@@ -1,11 +1,12 @@
 {
   "name": "candidature-echecs-briand",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Gestion des candidatures pour la section sportive échecs",
   "scripts": {
     "build:css": "sass assets/scss/:assets/css/ --style=compressed --no-source-map",
     "build": "npm run build:css",
     "lint:js": "wp-scripts lint-js",
+    "package": "./package.sh",
     "watch": "sass --watch assets/scss/:assets/css/"
   },
   "devDependencies": {

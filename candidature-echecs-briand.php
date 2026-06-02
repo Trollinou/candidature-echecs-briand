@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Candidature Section Échecs Collège Briand
  * Description:       Gestion des candidatures pour la section sportive échecs (Ouverture Septembre 2026).
- * Version:           1.0.0
+ * Version:           1.0.2
  * Author:            Etienne Gagnon
  * Text Domain:       candidature-echecs-briand
  * Domain Path:       /languages
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Constantes du Plugin
  */
-define( 'CEB_VERSION', '1.0.0' );
+define( 'CEB_VERSION', '1.0.2' );
 define( 'CEB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CEB_URL', plugin_dir_url( __FILE__ ) );
 
@@ -60,5 +60,8 @@ function ceb_run_plugin(): void {
 
 	$metabox_chess_journey = new \CEB\Metaboxes\Candidature\Chess_Journey();
 	$metabox_chess_journey->init();
+
+	$export_manager = new \CEB\Services\Export\Manager();
+	$export_manager->init();
 }
 add_action( 'plugins_loaded', 'ceb_run_plugin' );

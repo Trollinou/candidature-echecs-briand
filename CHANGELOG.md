@@ -5,6 +5,17 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Gestion sémantique de version](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-06-02
+
+### Ajouté
+- **Export Excel / CSV** : Ajout de la fonctionnalité d'exportation de toutes les candidatures au format CSV (compatible Excel, séparateur point-virgule et UTF-8 BOM) sans les lettres de motivation (qu'elles soient textuelles ou jointes).
+- **Bouton d'exportation** : Ajout d'un bouton « Exporter vers Excel » à côté du sélecteur d'année dans la vue d'administration des candidatures.
+
+## [1.0.1] - 2026-06-02
+
+### Ajouté
+- **Colonne Email** : Ajout d'une colonne affichant l'adresse e-mail du représentant légal (cliquable via `mailto:`) en deuxième position de la liste des candidats dans le back-office.
+
 ## [1.0.0] - 2026-03-28
 
 ### Ajouté
