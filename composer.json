@@ -3,21 +3,27 @@
   "description": "Gestion des candidatures pour la section sportive échecs",
   "type": "wordpress-plugin",
   "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
     "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^11.0",
     "szepeviktor/phpstan-wordpress": "^2.0",
-    "phpunit/phpunit": "^11.0"
+    "wp-coding-standards/wpcs": "^3.1"
   },
   "scripts": {
-    "lint:php": "phpstan analyze"
+    "lint:php": "phpstan analyze --memory-limit=1G --no-progress",
+    "lint:wpcs": "phpcs",
+    "format:wpcs": "phpcbf"
   },
   "autoload-dev": {
-        "psr-4": {
-            "CEB\\Tests\\": "tests/"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "szepeviktor/phpstan-wordpress": true
-        }
+    "psr-4": {
+      "CEB\\Tests\\": "tests/"
     }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "szepeviktor/phpstan-wordpress": true
+    }
+  }
 }

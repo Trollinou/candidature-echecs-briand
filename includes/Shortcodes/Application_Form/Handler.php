@@ -1,13 +1,21 @@
 <?php
+/**
+ * Traitement de la soumission du formulaire de candidature.
+ *
+ * @package Candidature_Echecs_Briand
+ */
+
 namespace CEB\Shortcodes\Application_Form;
 
+use DateTime;
+
 /**
- * Composant de traitement de la soumission du formulaire de candidature
+ * Composant de traitement de la soumission du formulaire de candidature.
  */
 class Handler {
 
 	/**
-	 * Initialisation des hooks de traitement
+	 * Initialisation des hooks de traitement.
 	 *
 	 * @return void
 	 */
@@ -17,61 +25,59 @@ class Handler {
 	}
 
 	/**
-	 * Traitement des données soumises par le formulaire
+	 * Traitement des données soumises par le formulaire.
 	 *
 	 * @return void
 	 */
 	public function process_form(): void {
-		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ceb_application_nonce'] ) ), 'ceb_submit_application' ) ) {
-			wp_die( 'Erreur de sécurité. Veuillez réessayer.' );
+		if ( ! isset( $_POST['ceb_application_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( (string) $_POST['ceb_application_nonce'] ) ), 'ceb_submit_application' ) ) {
+			wp_die( esc_html__( 'Erreur de sécurité. Veuillez réessayer.', 'candidature-echecs-briand' ) );
 		}
 
-		$nom          = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_nom'] ) ) ) : '';
-		$prenom       = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
-		$classe       = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe'] ) ) : '';
-		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_classe_cible'] ) ) : '';
+		$nom          = isset( $_POST['ceb_eleve_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_nom'] ) ) ) : '';
+		$prenom       = isset( $_POST['ceb_eleve_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '';
+		$classe       = isset( $_POST['ceb_eleve_classe'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_classe'] ) ) : '';
+		$classe_cible = isset( $_POST['ceb_eleve_classe_cible'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_classe_cible'] ) ) : '';
 
-		// Validation de l'âge
+		// Validation de l'âge.
 		if ( isset( $_POST['ceb_eleve_ddn'] ) ) {
-			$ddn = sanitize_text_field( wp_unslash( $_POST['ceb_eleve_ddn'] ) );
-			$ddn_datetime = new \DateTime( $ddn );
-			$now = new \DateTime();
-			$age = $now->diff( $ddn_datetime )->y;
+			$ddn          = sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_ddn'] ) );
+			$ddn_datetime = new DateTime( $ddn );
+			$now          = new DateTime();
+			$age          = $now->diff( $ddn_datetime )->y;
 
 			if ( $age < 7 || $age > 17 ) {
-				$redirect_url = wp_get_referer() ?: home_url();
+				$redirect_url = wp_get_referer() ? wp_get_referer() : home_url();
 				$redirect_url = add_query_arg( 'ceb_error', 'age', $redirect_url );
 				wp_safe_redirect( $redirect_url );
 				exit;
 			}
 		}
 
-		// Validation et formatage du téléphone principal (ceb_legal_tel)
+		// Validation et formatage du téléphone principal (ceb_legal_tel).
 		$legal_tel = '';
 		if ( isset( $_POST['ceb_legal_tel'] ) ) {
-			$raw_tel = str_replace( ' ', '', sanitize_text_field( wp_unslash( $_POST['ceb_legal_tel'] ) ) );
+			$raw_tel = str_replace( ' ', '', sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_tel'] ) ) );
 			if ( preg_match( '/^\d{10}$/', $raw_tel ) ) {
-				$legal_tel = wordwrap( $raw_tel, 2, ' ', true );
+				$legal_tel = (string) wordwrap( $raw_tel, 2, ' ', true );
 			} else {
-				$redirect_url = wp_get_referer() ?: home_url();
+				$redirect_url = wp_get_referer() ? wp_get_referer() : home_url();
 				$redirect_url = add_query_arg( 'ceb_error', 'tel', $redirect_url );
 				wp_safe_redirect( $redirect_url );
 				exit;
 			}
 		}
 
-		// Validation et formatage du téléphone secondaire (ceb_legal2_tel)
+		// Validation et formatage du téléphone secondaire (ceb_legal2_tel).
 		$legal2_tel = '';
 		if ( ! empty( $_POST['ceb_legal2_tel'] ) ) {
-			$raw_tel2 = str_replace( ' ', '', sanitize_text_field( wp_unslash( $_POST['ceb_legal2_tel'] ) ) );
+			$raw_tel2 = str_replace( ' ', '', sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_tel'] ) ) );
 			if ( preg_match( '/^\d{10}$/', $raw_tel2 ) ) {
-				$legal2_tel = wordwrap( $raw_tel2, 2, ' ', true );
+				$legal2_tel = (string) wordwrap( $raw_tel2, 2, ' ', true );
 			}
-			// Si invalide, on peut soit ignorer soit bloquer. La demande ne spécifie pas de bloquer pour legal2_tel.
-			// Conservons la valeur vide si invalide, car il est optionnel.
 		}
 
-		// Logique de rentrée
+		// Logique de rentrée.
 		$current_month = (int) wp_date( 'n' );
 		$current_year  = (int) wp_date( 'Y' );
 		if ( $current_month >= 3 && $current_month <= 5 ) {
@@ -80,62 +86,64 @@ class Handler {
 			$target_year = $current_year + 1;
 		}
 
-		// Titre du Post
+		// Titre du Post.
 		$post_title = sprintf( '[%s] %s %s - %s', $target_year, $nom, $prenom, $classe );
 
-		// Création du CPT
-		$post_id = wp_insert_post( [
-			'post_title'  => $post_title,
-			'post_type'   => 'ceb_candidature',
-			'post_status' => 'publish',
-		] );
+		// Création du CPT.
+		$post_id = wp_insert_post(
+			[
+				'post_title'  => $post_title,
+				'post_type'   => 'ceb_candidature',
+				'post_status' => 'publish',
+			]
+		);
 
-		if ( $post_id === 0 ) {
-			wp_die( 'Erreur lors de la création de la candidature.' );
+		if ( is_wp_error( $post_id ) || 0 === $post_id ) {
+			wp_die( esc_html__( 'Erreur lors de la création de la candidature.', 'candidature-echecs-briand' ) );
 		}
 
-		// Sauvegarde de toutes les metas
+		// Sauvegarde de toutes les metas.
 		$meta_mapping = [
 			'_ceb_eleve_nom'           => $nom,
 			'_ceb_eleve_prenom'        => $prenom,
-			'_ceb_eleve_ddn'           => isset( $_POST['ceb_eleve_ddn'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_ddn'] ) ) : '',
-			'_ceb_eleve_sexe'          => isset( $_POST['ceb_eleve_sexe'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_sexe'] ) ) : '',
-			'_ceb_eleve_ecole'         => isset( $_POST['ceb_eleve_ecole'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_ecole'] ) ) : '',
+			'_ceb_eleve_ddn'           => isset( $_POST['ceb_eleve_ddn'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_ddn'] ) ) : '',
+			'_ceb_eleve_sexe'          => isset( $_POST['ceb_eleve_sexe'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_sexe'] ) ) : '',
+			'_ceb_eleve_ecole'         => isset( $_POST['ceb_eleve_ecole'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_ecole'] ) ) : '',
 			'_ceb_eleve_classe'        => $classe,
-			'_ceb_eleve_lv1'           => isset( $_POST['ceb_eleve_lv1'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_lv1'] ) ) : '',
-			'_ceb_eleve_lv2'           => isset( $_POST['ceb_eleve_lv2'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_eleve_lv2'] ) ) : '',
+			'_ceb_eleve_lv1'           => isset( $_POST['ceb_eleve_lv1'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_lv1'] ) ) : '',
+			'_ceb_eleve_lv2'           => isset( $_POST['ceb_eleve_lv2'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_eleve_lv2'] ) ) : '',
 
-			'_ceb_legal_nom'           => isset( $_POST['ceb_legal_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal_nom'] ) ) ) : '',
-			'_ceb_legal_prenom'        => isset( $_POST['ceb_legal_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_legal_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '',
-			'_ceb_legal_lien'          => isset( $_POST['ceb_legal_lien'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_lien'] ) ) : '',
-			'_ceb_legal_adresse'       => isset( $_POST['ceb_legal_adresse'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_adresse'] ) ) : '',
-			'_ceb_legal_cplt'          => isset( $_POST['ceb_legal_cplt'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_cplt'] ) ) : '',
-			'_ceb_legal_cp'            => isset( $_POST['ceb_legal_cp'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal_cp'] ) ) : '',
-			'_ceb_legal_ville'         => isset( $_POST['ceb_legal_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal_ville'] ) ) ) : '',
+			'_ceb_legal_nom'           => isset( $_POST['ceb_legal_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_nom'] ) ) ) : '',
+			'_ceb_legal_prenom'        => isset( $_POST['ceb_legal_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '',
+			'_ceb_legal_lien'          => isset( $_POST['ceb_legal_lien'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_lien'] ) ) : '',
+			'_ceb_legal_adresse'       => isset( $_POST['ceb_legal_adresse'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_adresse'] ) ) : '',
+			'_ceb_legal_cplt'          => isset( $_POST['ceb_legal_cplt'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_cplt'] ) ) : '',
+			'_ceb_legal_cp'            => isset( $_POST['ceb_legal_cp'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_cp'] ) ) : '',
+			'_ceb_legal_ville'         => isset( $_POST['ceb_legal_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal_ville'] ) ) ) : '',
 			'_ceb_legal_tel'           => $legal_tel,
-			'_ceb_legal_email'         => isset( $_POST['ceb_legal_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal_email'] ) ) : '',
+			'_ceb_legal_email'         => isset( $_POST['ceb_legal_email'] ) ? sanitize_email( wp_unslash( (string) $_POST['ceb_legal_email'] ) ) : '',
 
-			'_ceb_legal2_nom'          => isset( $_POST['ceb_legal2_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_nom'] ) ) ) : '',
-			'_ceb_legal2_prenom'       => isset( $_POST['ceb_legal2_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '',
-			'_ceb_legal2_lien'         => isset( $_POST['ceb_legal2_lien'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_lien'] ) ) : '',
-			'_ceb_legal2_adresse'      => isset( $_POST['ceb_legal2_adresse'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_adresse'] ) ) : '',
-			'_ceb_legal2_cplt'         => isset( $_POST['ceb_legal2_cplt'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cplt'] ) ) : '',
-			'_ceb_legal2_cp'           => isset( $_POST['ceb_legal2_cp'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_legal2_cp'] ) ) : '',
-			'_ceb_legal2_ville'        => isset( $_POST['ceb_legal2_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( $_POST['ceb_legal2_ville'] ) ) ) : '',
+			'_ceb_legal2_nom'          => isset( $_POST['ceb_legal2_nom'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_nom'] ) ) ) : '',
+			'_ceb_legal2_prenom'       => isset( $_POST['ceb_legal2_prenom'] ) ? mb_convert_case( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_prenom'] ) ), MB_CASE_TITLE, 'UTF-8' ) : '',
+			'_ceb_legal2_lien'         => isset( $_POST['ceb_legal2_lien'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_lien'] ) ) : '',
+			'_ceb_legal2_adresse'      => isset( $_POST['ceb_legal2_adresse'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_adresse'] ) ) : '',
+			'_ceb_legal2_cplt'         => isset( $_POST['ceb_legal2_cplt'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_cplt'] ) ) : '',
+			'_ceb_legal2_cp'           => isset( $_POST['ceb_legal2_cp'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_cp'] ) ) : '',
+			'_ceb_legal2_ville'        => isset( $_POST['ceb_legal2_ville'] ) ? mb_strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['ceb_legal2_ville'] ) ) ) : '',
 			'_ceb_legal2_tel'          => $legal2_tel,
-			'_ceb_legal2_email'        => isset( $_POST['ceb_legal2_email'] ) ? sanitize_email( wp_unslash( $_POST['ceb_legal2_email'] ) ) : '',
+			'_ceb_legal2_email'        => isset( $_POST['ceb_legal2_email'] ) ? sanitize_email( wp_unslash( (string) $_POST['ceb_legal2_email'] ) ) : '',
 
 			'_ceb_echecs_debut'        => isset( $_POST['ceb_echecs_debut'] ) ? absint( $_POST['ceb_echecs_debut'] ) : '',
-			'_ceb_echecs_club'         => isset( $_POST['ceb_echecs_club'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_echecs_club'] ) ) : '',
-			'_ceb_echecs_niveau'       => isset( $_POST['ceb_echecs_niveau'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_echecs_niveau'] ) ) : '',
-			'_ceb_echecs_competitions' => isset( $_POST['ceb_echecs_competitions'] ) ? wp_kses_post( wp_unslash( $_POST['ceb_echecs_competitions'] ) ) : '',
-			'_ceb_echecs_titres'       => isset( $_POST['ceb_echecs_titres'] ) ? wp_kses_post( wp_unslash( $_POST['ceb_echecs_titres'] ) ) : '',
+			'_ceb_echecs_club'         => isset( $_POST['ceb_echecs_club'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_echecs_club'] ) ) : '',
+			'_ceb_echecs_niveau'       => isset( $_POST['ceb_echecs_niveau'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_echecs_niveau'] ) ) : '',
+			'_ceb_echecs_competitions' => isset( $_POST['ceb_echecs_competitions'] ) ? wp_kses_post( wp_unslash( (string) $_POST['ceb_echecs_competitions'] ) ) : '',
+			'_ceb_echecs_titres'       => isset( $_POST['ceb_echecs_titres'] ) ? wp_kses_post( wp_unslash( (string) $_POST['ceb_echecs_titres'] ) ) : '',
 
 			'_ceb_target_year'         => (string) $target_year,
 		];
 
-		// Gestion de la motivation
-		$motivation_type = isset( $_POST['ceb_motivation_type'] ) ? sanitize_text_field( wp_unslash( $_POST['ceb_motivation_type'] ) ) : 'fichier';
+		// Gestion de la motivation.
+		$motivation_type                      = isset( $_POST['ceb_motivation_type'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['ceb_motivation_type'] ) ) : 'fichier';
 		$meta_mapping['_ceb_motivation_type'] = $motivation_type;
 
 		$motivation_file_error = false;
@@ -145,61 +153,43 @@ class Handler {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				require_once ABSPATH . 'wp-admin/includes/media.php';
 
-				// Validation du type de fichier
-				$file_name          = sanitize_text_field( wp_unslash( $_FILES['ceb_motivation_fichier']['name'] ) );
+				// Validation du type de fichier.
+				$file_name          = sanitize_text_field( wp_unslash( (string) $_FILES['ceb_motivation_fichier']['name'] ) );
 				$file_type          = wp_check_filetype( $file_name );
 				$allowed_extensions = [ 'pdf', 'doc', 'docx', 'odt', 'rtf' ];
 
 				if ( ! in_array( strtolower( (string) $file_type['ext'] ), $allowed_extensions, true ) ) {
 					wp_delete_post( $post_id, true );
-					wp_die( 'Type de fichier non autorisé. Veuillez télécharger un fichier PDF, DOC, DOCX, ODT ou RTF.' );
+					wp_die( esc_html__( 'Type de fichier non autorisé. Veuillez télécharger un fichier PDF, DOC, DOCX, ODT ou RTF.', 'candidature-echecs-briand' ) );
 				}
 
 				$attachment_id = media_handle_upload( 'ceb_motivation_fichier', $post_id );
 				if ( is_wp_error( $attachment_id ) ) {
 					wp_delete_post( $post_id, true );
-					wp_die( 'Erreur lors du téléchargement du fichier de motivation : ' . esc_html( $attachment_id->get_error_message() ) );
+					wp_die( esc_html__( 'Erreur lors du téléchargement du fichier de motivation : ', 'candidature-echecs-briand' ) . esc_html( $attachment_id->get_error_message() ) );
 				}
 				$meta_mapping['_ceb_motivation_fichier_id'] = $attachment_id;
 			} else {
 				$motivation_file_error = true;
 			}
 		} elseif ( 'texte' === $motivation_type ) {
-			$meta_mapping['_ceb_motivation_texte'] = isset( $_POST['ceb_motivation_texte'] ) ? wp_kses_post( wp_unslash( $_POST['ceb_motivation_texte'] ) ) : '';
+			$meta_mapping['_ceb_motivation_texte'] = isset( $_POST['ceb_motivation_texte'] ) ? wp_kses_post( wp_unslash( (string) $_POST['ceb_motivation_texte'] ) ) : '';
 		}
 
 		if ( $motivation_file_error ) {
 			wp_delete_post( $post_id, true );
-			wp_die( 'Le fichier de motivation est requis.' );
+			wp_die( esc_html__( 'Le fichier de motivation est requis.', 'candidature-echecs-briand' ) );
 		}
 
-		// Ajout de la classe ciblée dans le mapping avant l'insertion en masse
+		// Ajout de la classe ciblée dans le mapping.
 		$meta_mapping['_ceb_eleve_classe_cible'] = $classe_cible;
 
-		// Bulk Insert Metas
-		global $wpdb;
-		$values = [];
-		$placeholders = [];
-
+		// Sauvegarde de toutes les métadonnées.
 		foreach ( $meta_mapping as $meta_key => $meta_value ) {
-			$placeholders[] = '(%d, %s, %s)';
-			$values[] = $post_id;
-			$values[] = $meta_key;
-			$values[] = $meta_value;
+			update_post_meta( $post_id, $meta_key, $meta_value );
 		}
 
-		if ( count( $values ) > 0 ) {
-			$query = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ', ', $placeholders );
-			// Unpacking the array is supported in WP $wpdb->prepare since older versions but passing ...$values is standard in modern PHP 8
-			$wpdb->query( $wpdb->prepare( $query, ...$values ) );
-		}
-
-		// Invalidation du cache post meta
-		if ( function_exists( 'clean_post_cache' ) ) {
-			clean_post_cache( $post_id );
-		}
-
-		// Envoi de l'email de confirmation
+		// Envoi de l'email de confirmation.
 		$legal_email = isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '';
 		$to          = [];
 		if ( is_email( $legal_email ) ) {
@@ -219,86 +209,85 @@ class Handler {
 			}
 		}
 
-		$message  = "<p>Bonjour,</p>";
-		$message .= "<p>Nous vous remercions pour votre candidature à la Section Sportive Échecs du Collège Briand. Votre dossier a bien été transmis au comité de sélection de l'Échiquier Lédonien, qui assurera l'enseignement de la section. Veuillez noter que la décision finale concernant l'acceptation de votre demande reviendra conjointement au Collège et au Rectorat.</p>";
-		$message .= "<h3>Récapitulatif des informations saisies :</h3>";
+		$message  = '<p>Bonjour,</p>';
+		$message .= '<p>Nous vous remercions pour votre candidature à la Section Sportive Échecs du Collège Briand. Votre dossier a bien été transmis au comité de sélection de l\'Échiquier Lédonien, qui assurera l\'enseignement de la section. Veuillez noter que la décision finale concernant l\'acceptation de votre demande reviendra conjointement au Collège et au Rectorat.</p>';
+		$message .= '<h3>Récapitulatif des informations saisies :</h3>';
 
-		$message .= "<h4>1. Identité de l'élève</h4>";
-		$message .= "<ul>";
-		$message .= "<li><strong>Nom :</strong> " . esc_html( $nom ) . "</li>";
-		$message .= "<li><strong>Prénom :</strong> " . esc_html( $prenom ) . "</li>";
-		$ddn_raw = isset( $meta_mapping['_ceb_eleve_ddn'] ) ? (string) $meta_mapping['_ceb_eleve_ddn'] : '';
-		$ddn_formatted = $ddn_raw ? wp_date( 'd/m/Y', strtotime( $ddn_raw ) ) : '';
-		$message .= "<li><strong>Date de naissance :</strong> " . esc_html( $ddn_formatted ) . "</li>";
-		$message .= "<li><strong>Sexe :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_sexe'] ) ? (string) $meta_mapping['_ceb_eleve_sexe'] : '' ) . "</li>";
-		$message .= "<li><strong>Établissement actuel :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_ecole'] ) ? (string) $meta_mapping['_ceb_eleve_ecole'] : '' ) . "</li>";
-		$message .= "<li><strong>Classe actuelle :</strong> " . esc_html( $classe ) . "</li>";
-		$message .= "<li><strong>Classe ciblée à la rentrée :</strong> " . esc_html( $classe_cible ) . "</li>";
-		$message .= "<li><strong>LV1 :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_lv1'] ) ? (string) $meta_mapping['_ceb_eleve_lv1'] : '' ) . "</li>";
-		$message .= "<li><strong>LV2 :</strong> " . esc_html( isset( $meta_mapping['_ceb_eleve_lv2'] ) ? (string) $meta_mapping['_ceb_eleve_lv2'] : '' ) . "</li>";
-		$message .= "</ul>";
+		$message      .= '<h4>1. Identité de l\'élève</h4>';
+		$message      .= '<ul>';
+		$message      .= '<li><strong>Nom :</strong> ' . esc_html( $nom ) . '</li>';
+		$message      .= '<li><strong>Prénom :</strong> ' . esc_html( $prenom ) . '</li>';
+		$ddn_raw       = isset( $meta_mapping['_ceb_eleve_ddn'] ) ? (string) $meta_mapping['_ceb_eleve_ddn'] : '';
+		$ddn_formatted = $ddn_raw ? wp_date( 'd/m/Y', (int) strtotime( $ddn_raw ) ) : '';
+		$message      .= '<li><strong>Date de naissance :</strong> ' . esc_html( (string) $ddn_formatted ) . '</li>';
+		$message      .= '<li><strong>Sexe :</strong> ' . esc_html( isset( $meta_mapping['_ceb_eleve_sexe'] ) ? (string) $meta_mapping['_ceb_eleve_sexe'] : '' ) . '</li>';
+		$message      .= '<li><strong>Établissement actuel :</strong> ' . esc_html( isset( $meta_mapping['_ceb_eleve_ecole'] ) ? (string) $meta_mapping['_ceb_eleve_ecole'] : '' ) . '</li>';
+		$message      .= '<li><strong>Classe actuelle :</strong> ' . esc_html( $classe ) . '</li>';
+		$message      .= '<li><strong>Classe ciblée à la rentrée :</strong> ' . esc_html( $classe_cible ) . '</li>';
+		$message      .= '<li><strong>LV1 :</strong> ' . esc_html( isset( $meta_mapping['_ceb_eleve_lv1'] ) ? (string) $meta_mapping['_ceb_eleve_lv1'] : '' ) . '</li>';
+		$message      .= '<li><strong>LV2 :</strong> ' . esc_html( isset( $meta_mapping['_ceb_eleve_lv2'] ) ? (string) $meta_mapping['_ceb_eleve_lv2'] : '' ) . '</li>';
+		$message      .= '</ul>';
 
-		$message .= "<h4>2. Représentant légal</h4>";
-		$message .= "<ul>";
-		$message .= "<li><strong>Nom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_nom'] ) . "</li>";
-		$message .= "<li><strong>Prénom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_prenom'] ) . "</li>";
-		$message .= "<li><strong>Lien de parenté :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_lien'] ) ? (string) $meta_mapping['_ceb_legal_lien'] : '' ) . "</li>";
-		$message .= "<li><strong>Adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_adresse'] ) ? (string) $meta_mapping['_ceb_legal_adresse'] : '' ) . "</li>";
-		$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cplt'] ) ? (string) $meta_mapping['_ceb_legal_cplt'] : '' ) . "</li>";
-		$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_cp'] ) ? (string) $meta_mapping['_ceb_legal_cp'] : '' ) . "</li>";
-		$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_ville'] ) . "</li>";
-		$message .= "<li><strong>Téléphone :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal_tel'] ) . "</li>";
-		$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '' ) . "</li>";
-		$message .= "</ul>";
+		$message .= '<h4>2. Représentant légal</h4>';
+		$message .= '<ul>';
+		$message .= '<li><strong>Nom :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal_nom'] ) . '</li>';
+		$message .= '<li><strong>Prénom :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal_prenom'] ) . '</li>';
+		$message .= '<li><strong>Lien de parenté :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal_lien'] ) ? (string) $meta_mapping['_ceb_legal_lien'] : '' ) . '</li>';
+		$message .= '<li><strong>Adresse :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal_adresse'] ) ? (string) $meta_mapping['_ceb_legal_adresse'] : '' ) . '</li>';
+		$message .= '<li><strong>Complément d\'adresse :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal_cplt'] ) ? (string) $meta_mapping['_ceb_legal_cplt'] : '' ) . '</li>';
+		$message .= '<li><strong>Code Postal :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal_cp'] ) ? (string) $meta_mapping['_ceb_legal_cp'] : '' ) . '</li>';
+		$message .= '<li><strong>Ville :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal_ville'] ) . '</li>';
+		$message .= '<li><strong>Téléphone :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal_tel'] ) . '</li>';
+		$message .= '<li><strong>Courriel :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal_email'] ) ? (string) $meta_mapping['_ceb_legal_email'] : '' ) . '</li>';
+		$message .= '</ul>';
 
 		if ( ! empty( $meta_mapping['_ceb_legal2_nom'] ) || ! empty( $meta_mapping['_ceb_legal2_email'] ) ) {
-			$message .= "<h4>Second Représentant Légal</h4>";
-			$message .= "<ul>";
-			$message .= "<li><strong>Nom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_nom'] ) . "</li>";
-			$message .= "<li><strong>Prénom :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_prenom'] ) . "</li>";
-			$message .= "<li><strong>Lien de parenté :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_lien'] ) ? (string) $meta_mapping['_ceb_legal2_lien'] : '' ) . "</li>";
-			$message .= "<li><strong>Adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_adresse'] ) ? (string) $meta_mapping['_ceb_legal2_adresse'] : '' ) . "</li>";
-			$message .= "<li><strong>Complément d'adresse :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cplt'] ) ? (string) $meta_mapping['_ceb_legal2_cplt'] : '' ) . "</li>";
-			$message .= "<li><strong>Code Postal :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_cp'] ) ? (string) $meta_mapping['_ceb_legal2_cp'] : '' ) . "</li>";
-			$message .= "<li><strong>Ville :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_ville'] ) . "</li>";
-			$message .= "<li><strong>Téléphone :</strong> " . esc_html( (string) $meta_mapping['_ceb_legal2_tel'] ) . "</li>";
-			$message .= "<li><strong>Courriel :</strong> " . esc_html( isset( $meta_mapping['_ceb_legal2_email'] ) ? (string) $meta_mapping['_ceb_legal2_email'] : '' ) . "</li>";
-			$message .= "</ul>";
+			$message .= '<h4>Second Représentant Légal</h4>';
+			$message .= '<ul>';
+			$message .= '<li><strong>Nom :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal2_nom'] ) . '</li>';
+			$message .= '<li><strong>Prénom :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal2_prenom'] ) . '</li>';
+			$message .= '<li><strong>Lien de parenté :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal2_lien'] ) ? (string) $meta_mapping['_ceb_legal2_lien'] : '' ) . '</li>';
+			$message .= '<li><strong>Adresse :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal2_adresse'] ) ? (string) $meta_mapping['_ceb_legal2_adresse'] : '' ) . '</li>';
+			$message .= '<li><strong>Complément d\'adresse :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal2_cplt'] ) ? (string) $meta_mapping['_ceb_legal2_cplt'] : '' ) . '</li>';
+			$message .= '<li><strong>Code Postal :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal2_cp'] ) ? (string) $meta_mapping['_ceb_legal2_cp'] : '' ) . '</li>';
+			$message .= '<li><strong>Ville :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal2_ville'] ) . '</li>';
+			$message .= '<li><strong>Téléphone :</strong> ' . esc_html( (string) $meta_mapping['_ceb_legal2_tel'] ) . '</li>';
+			$message .= '<li><strong>Courriel :</strong> ' . esc_html( isset( $meta_mapping['_ceb_legal2_email'] ) ? (string) $meta_mapping['_ceb_legal2_email'] : '' ) . '</li>';
+			$message .= '</ul>';
 		}
 
-		$message .= "<h4>3. Parcours échiquéen</h4>";
-		$message .= "<ul>";
-		$message .= "<li><strong>Année de début des Échecs :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_debut'] ) ? (string) $meta_mapping['_ceb_echecs_debut'] : '' ) . "</li>";
-		$message .= "<li><strong>Club actuel :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_club'] ) ? (string) $meta_mapping['_ceb_echecs_club'] : '' ) . "</li>";
-		$message .= "<li><strong>Niveau :</strong> " . esc_html( isset( $meta_mapping['_ceb_echecs_niveau'] ) ? (string) $meta_mapping['_ceb_echecs_niveau'] : '' ) . "</li>";
+		$message .= '<h4>3. Parcours échiquéen</h4>';
+		$message .= '<ul>';
+		$message .= '<li><strong>Année de début des Échecs :</strong> ' . esc_html( isset( $meta_mapping['_ceb_echecs_debut'] ) ? (string) $meta_mapping['_ceb_echecs_debut'] : '' ) . '</li>';
+		$message .= '<li><strong>Club actuel :</strong> ' . esc_html( isset( $meta_mapping['_ceb_echecs_club'] ) ? (string) $meta_mapping['_ceb_echecs_club'] : '' ) . '</li>';
+		$message .= '<li><strong>Niveau :</strong> ' . esc_html( isset( $meta_mapping['_ceb_echecs_niveau'] ) ? (string) $meta_mapping['_ceb_echecs_niveau'] : '' ) . '</li>';
 
 		$echecs_competitions = isset( $meta_mapping['_ceb_echecs_competitions'] ) ? (string) $meta_mapping['_ceb_echecs_competitions'] : '';
 		if ( ! empty( $echecs_competitions ) ) {
-			$message .= "<li><strong>Principales compétitions effectuées :</strong><br>" . wp_kses_post( $echecs_competitions ) . "</li>";
+			$message .= '<li><strong>Principales compétitions effectuées :</strong><br>' . wp_kses_post( $echecs_competitions ) . '</li>';
 		}
 
 		$echecs_titres = isset( $meta_mapping['_ceb_echecs_titres'] ) ? (string) $meta_mapping['_ceb_echecs_titres'] : '';
 		if ( ! empty( $echecs_titres ) ) {
-			$message .= "<li><strong>Titres notables obtenus :</strong><br>" . wp_kses_post( $echecs_titres ) . "</li>";
+			$message .= '<li><strong>Titres notables obtenus :</strong><br>' . wp_kses_post( $echecs_titres ) . '</li>';
 		}
 
 		if ( 'texte' === $motivation_type ) {
 			$motivation_texte = isset( $meta_mapping['_ceb_motivation_texte'] ) ? (string) $meta_mapping['_ceb_motivation_texte'] : '';
-			$message .= "<li><strong>Texte de motivation :</strong><br>" . wp_kses_post( $motivation_texte ) . "</li>";
+			$message         .= '<li><strong>Texte de motivation :</strong><br>' . wp_kses_post( $motivation_texte ) . '</li>';
 		}
-		$message .= "</ul>";
+		$message .= '</ul>';
 
-		$message .= "<p><strong>Attention :</strong> Si le collège Briand de Lons-le-Saunier n'est pas votre collège de secteur, nous vous rappelons que vous devez effectuer une 'Demande de dérogation' auprès de la 'Direction des services départementaux de l'Éducation nationale (DSDEN) du Jura — Division élèves, familles et second degré' en appelant le 03 84 87 27 39.</p>";
+		$message .= '<p><strong>Attention :</strong> Si le collège Briand de Lons-le-Saunier n\'est pas votre collège de secteur, nous vous rappelons que vous devez effectuer une \'Demande de dérogation\' auprès de la \'Direction des services départementaux de l\'Éducation nationale (DSDEN) du Jura — Division élèves, familles et second degré\' en appelant le 03 84 87 27 39.</p>';
 
-		$message .= "<p>Cordialement,<br>L'équipe de la section Échecs</p>";
+		$message .= '<p>Cordialement,<br>L\'équipe de la section Échecs</p>';
 
 		wp_mail( $to, $subject, $message, $headers, $attachments );
 
-		// Redirection
-		$redirect_url = wp_get_referer() ?: home_url();
+		// Redirection.
+		$redirect_url = wp_get_referer() ? wp_get_referer() : home_url();
 		$redirect_url = add_query_arg( 'success', '1', $redirect_url );
 
-		// Ensure it points to the current page by stripping query string and rebuilding if necessary, or just rely on referer
 		wp_safe_redirect( $redirect_url );
 		exit;
 	}

@@ -5,6 +5,21 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Gestion sémantique de version](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Ajouté
+- **WordPress 7.1 Compatibility & Modernization** :
+  - Déclaration formelle et typée de l'ensemble des métadonnées via `register_post_meta()` avec typage PHP 8.4 et schémas JSON REST.
+  - Contrôleur REST API dédié (`CEB\API\Candidature_Controller` -> `/wp-json/ceb/v1/candidature`) pour la soumission des candidatures.
+  - Bloc Gutenberg dynamique `candidature-echecs-briand/application-form` pour le Full Site Editing (FSE).
+- **Standards de Qualité Élevés (Alignement Projet Dame)** :
+  - Intégration de PHP_CodeSniffer avec les règles officielles **WordPress Coding Standards (WPCS)** (`phpcs.xml.dist`, scripts `lint:wpcs` et `format:wpcs`).
+  - Élévation de l'analyse statique **PHPStan au Niveau 7** sans aucune erreur.
+
+### Modifié
+- Prérequis WordPress passé à `Requires at least: 7.1`.
+- Refactorisation de l'ensemble du codebase PHP selon les normes strictes WPCS.
+
 ## [1.0.2] - 2026-06-02
 
 ### Ajouté

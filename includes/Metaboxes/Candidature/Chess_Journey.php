@@ -1,13 +1,19 @@
 <?php
+/**
+ * Metabox Parcours Échiquéen et Motivation.
+ *
+ * @package Candidature_Echecs_Briand
+ */
+
 namespace CEB\Metaboxes\Candidature;
 
 /**
- * Metabox : Parcours Échiquéen et Motivation (Lecture seule)
+ * Metabox : Parcours Échiquéen et Motivation (Lecture seule).
  */
 class Chess_Journey {
 
 	/**
-	 * Initialisation de la metabox
+	 * Initialisation de la metabox.
 	 *
 	 * @return void
 	 */
@@ -16,14 +22,14 @@ class Chess_Journey {
 	}
 
 	/**
-	 * Ajout de la metabox dans le CPT
+	 * Ajout de la metabox dans le CPT.
 	 *
 	 * @return void
 	 */
 	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_chess',
-			'3. Parcours échiquéen & Motivation',
+			__( '3. Parcours échiquéen & Motivation', 'candidature-echecs-briand' ),
 			[ $this, 'render' ],
 			'ceb_candidature',
 			'normal',
@@ -32,37 +38,37 @@ class Chess_Journey {
 	}
 
 	/**
-	 * Rendu HTML de la metabox (Lecture seule)
+	 * Rendu HTML de la metabox (Lecture seule).
 	 *
 	 * @param \WP_Post $post L'objet Post courant.
 	 * @return void
 	 */
 	public function render( \WP_Post $post ): void {
-		$debut        = (string) get_post_meta( $post->ID, '_ceb_echecs_debut', true );
-		$club         = (string) get_post_meta( $post->ID, '_ceb_echecs_club', true );
-		$niveau       = (string) get_post_meta( $post->ID, '_ceb_echecs_niveau', true );
-		$competitions = (string) get_post_meta( $post->ID, '_ceb_echecs_competitions', true );
-		$titres       = (string) get_post_meta( $post->ID, '_ceb_echecs_titres', true );
+		$debut           = (string) get_post_meta( $post->ID, '_ceb_echecs_debut', true );
+		$club            = (string) get_post_meta( $post->ID, '_ceb_echecs_club', true );
+		$niveau          = (string) get_post_meta( $post->ID, '_ceb_echecs_niveau', true );
+		$competitions    = (string) get_post_meta( $post->ID, '_ceb_echecs_competitions', true );
+		$titres          = (string) get_post_meta( $post->ID, '_ceb_echecs_titres', true );
 		$motivation_type = (string) get_post_meta( $post->ID, '_ceb_motivation_type', true );
 		?>
 		<div class="ceb-metabox-content">
-			<p style="margin: 4px 0;"><strong>Année de début :</strong> <?php echo esc_html( $debut ); ?></p>
-			<p style="margin: 4px 0;"><strong>Club actuel :</strong> <?php echo esc_html( $club ?: 'Aucun' ); ?></p>
-			<p style="margin: 4px 0;"><strong>Niveau :</strong> <?php echo esc_html( $niveau ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Année de début :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $debut ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Club actuel :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $club ? $club : __( 'Aucun', 'candidature-echecs-briand' ) ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Niveau :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $niveau ); ?></p>
 
 			<?php if ( $competitions ) : ?>
-				<p style="margin: 4px 0;"><strong>Compétitions :</strong></p>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Compétitions :', 'candidature-echecs-briand' ); ?></strong></p>
 				<div style="margin-left: 10px; margin-bottom: 8px;"><?php echo wp_kses_post( wpautop( $competitions ) ); ?></div>
 			<?php endif; ?>
 
 			<?php if ( $titres ) : ?>
-				<p style="margin: 4px 0;"><strong>Titres notables :</strong></p>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Titres notables :', 'candidature-echecs-briand' ); ?></strong></p>
 				<div style="margin-left: 10px; margin-bottom: 8px;"><?php echo wp_kses_post( wpautop( $titres ) ); ?></div>
 			<?php endif; ?>
 
 			<hr style="margin: 15px 0;">
 
-			<p style="margin: 4px 0;"><strong>Motivation :</strong></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Motivation :', 'candidature-echecs-briand' ); ?></strong></p>
 			<div style="margin-left: 10px; margin-bottom: 8px;">
 				<?php if ( 'fichier' === $motivation_type ) : ?>
 					<?php
@@ -71,14 +77,15 @@ class Chess_Journey {
 						$url = wp_get_attachment_url( $fichier_id );
 						if ( $url ) {
 							printf(
-								'<a href="%s" target="_blank" class="button button-primary" style="margin-top: 5px;">Télécharger la lettre de motivation</a>',
-								esc_url( $url )
+								'<a href="%1$s" target="_blank" class="button button-primary" style="margin-top: 5px;">%2$s</a>',
+								esc_url( $url ),
+								esc_html__( 'Télécharger la lettre de motivation', 'candidature-echecs-briand' )
 							);
 						} else {
-							echo '<em>Fichier introuvable.</em>';
+							echo '<em>' . esc_html__( 'Fichier introuvable.', 'candidature-echecs-briand' ) . '</em>';
 						}
 					} else {
-						echo '<em>Aucun fichier joint.</em>';
+						echo '<em>' . esc_html__( 'Aucun fichier joint.', 'candidature-echecs-briand' ) . '</em>';
 					}
 					?>
 				<?php elseif ( 'texte' === $motivation_type ) : ?>
@@ -87,11 +94,11 @@ class Chess_Journey {
 					if ( $texte ) {
 						echo wp_kses_post( wpautop( $texte ) );
 					} else {
-						echo '<em>Aucun texte fourni.</em>';
+						echo '<em>' . esc_html__( 'Aucun texte fourni.', 'candidature-echecs-briand' ) . '</em>';
 					}
 					?>
 				<?php else : ?>
-					<em>Non renseignée.</em>
+					<em><?php esc_html_e( 'Non renseignée.', 'candidature-echecs-briand' ); ?></em>
 				<?php endif; ?>
 			</div>
 		</div>

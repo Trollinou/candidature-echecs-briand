@@ -1,13 +1,21 @@
 <?php
+/**
+ * Gestion du Custom Post Type Candidature.
+ *
+ * @package Candidature_Echecs_Briand
+ */
+
 namespace CEB\CPT;
 
+use WP_Query;
+
 /**
- * Gestion du Custom Post Type "Candidature"
+ * Gestion du Custom Post Type "Candidature".
  */
 class Candidature {
 
 	/**
-	 * Initialisation du CPT et de ses colonnes
+	 * Initialisation du CPT et de ses colonnes.
 	 *
 	 * @return void
 	 */
@@ -21,60 +29,61 @@ class Candidature {
 	}
 
 	/**
-	 * Enregistrement du type de publication personnalisé "ceb_candidature"
+	 * Enregistrement du type de publication personnalisé "ceb_candidature".
 	 *
 	 * @return void
 	 */
 	public function register_cpt(): void {
 		$labels = [
-			'name'                  => 'Candidatures',
-			'singular_name'         => 'Candidature',
-			'menu_name'             => 'Candidatures Échecs',
-			'all_items'             => 'Toutes les candidatures',
-			'not_found'             => 'Aucune candidature trouvée',
+			'name'          => __( 'Candidatures', 'candidature-echecs-briand' ),
+			'singular_name' => __( 'Candidature', 'candidature-echecs-briand' ),
+			'menu_name'     => __( 'Candidatures Échecs', 'candidature-echecs-briand' ),
+			'all_items'     => __( 'Toutes les candidatures', 'candidature-echecs-briand' ),
+			'not_found'     => __( 'Aucune candidature trouvée', 'candidature-echecs-briand' ),
 		];
 
 		$args = [
-			'label'                 => 'Candidature',
-			'labels'                => $labels,
-			'supports'              => [ 'title' ],
-			'public'                => false,
-			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 25,
-			'menu_icon'             => 'dashicons-welcome-learn-more',
-			'exclude_from_search'   => true,
-			'publicly_queryable'    => false,
-			'capabilities'          => [
+			'label'               => __( 'Candidature', 'candidature-echecs-briand' ),
+			'labels'              => $labels,
+			'supports'            => [ 'title' ],
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_rest'        => true,
+			'menu_position'       => 25,
+			'menu_icon'           => 'dashicons-welcome-learn-more',
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+			'capabilities'        => [
 				'create_posts' => 'do_not_allow',
 			],
-			'map_meta_cap'          => true,
+			'map_meta_cap'        => true,
 		];
 
 		register_post_type( 'ceb_candidature', $args );
 	}
 
 	/**
-	 * Définition des colonnes personnalisées pour la liste des candidatures
+	 * Définition des colonnes personnalisées pour la liste des candidatures.
 	 *
 	 * @param array<string, string> $columns Les colonnes par défaut.
 	 * @return array<string, string> Les colonnes modifiées.
 	 */
 	public function set_custom_columns( array $columns ): array {
-		$new_columns = [];
-		$new_columns['cb'] = $columns['cb'];
-		$new_columns['title'] = 'Candidat';
-		$new_columns['email'] = 'Email';
-		$new_columns['rentree'] = 'Rentrée';
-		$new_columns['classe'] = 'Classe actuelle';
-		$new_columns['classe_cible'] = 'Classe ciblée';
-		$new_columns['niveau'] = 'Niveau Échecs';
-		$new_columns['date'] = $columns['date'];
+		$new_columns                 = [];
+		$new_columns['cb']           = $columns['cb'];
+		$new_columns['title']        = __( 'Candidat', 'candidature-echecs-briand' );
+		$new_columns['email']        = __( 'Email', 'candidature-echecs-briand' );
+		$new_columns['rentree']      = __( 'Rentrée', 'candidature-echecs-briand' );
+		$new_columns['classe']       = __( 'Classe actuelle', 'candidature-echecs-briand' );
+		$new_columns['classe_cible'] = __( 'Classe ciblée', 'candidature-echecs-briand' );
+		$new_columns['niveau']       = __( 'Niveau Échecs', 'candidature-echecs-briand' );
+		$new_columns['date']         = $columns['date'];
 		return $new_columns;
 	}
 
 	/**
-	 * Affichage du contenu des colonnes personnalisées
+	 * Affichage du contenu des colonnes personnalisées.
 	 *
 	 * @param string $column  L'identifiant de la colonne.
 	 * @param int    $post_id L'ID de la publication.
@@ -114,20 +123,23 @@ class Candidature {
 			return;
 		}
 
-		$current_year = date( 'Y' );
-		$selected     = isset( $_GET['ceb_filter_year'] ) ? sanitize_text_field( $_GET['ceb_filter_year'] ) : $current_year;
+		$current_year = gmdate( 'Y' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Filtre de vue GET dans l'admin.
+		$selected = isset( $_GET['ceb_filter_year'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['ceb_filter_year'] ) ) : $current_year;
 
 		// Utiliser $wpdb pour récupérer les années existantes.
 		global $wpdb;
-		$years = $wpdb->get_col( $wpdb->prepare(
-			"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s ORDER BY meta_value DESC",
-			'_ceb_target_year'
-		) );
+		$years = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s ORDER BY meta_value DESC",
+				'_ceb_target_year'
+			)
+		);
 
 		if ( empty( $years ) ) {
 			$years = [ $current_year, (string) ( (int) $current_year + 1 ) ];
 		} else {
-			// S'assurer que l'année courante est toujours dans la liste
+			// S'assurer que l'année courante est toujours dans la liste.
 			if ( ! in_array( $current_year, $years, true ) ) {
 				$years[] = $current_year;
 			}
@@ -149,10 +161,10 @@ class Candidature {
 	/**
 	 * Filtre la requête principale en fonction de l'année sélectionnée.
 	 *
-	 * @param \WP_Query $query L'objet requête de WordPress.
+	 * @param WP_Query $query L'objet requête de WordPress.
 	 * @return void
 	 */
-	public function filter_by_year( \WP_Query $query ): void {
+	public function filter_by_year( WP_Query $query ): void {
 		if ( ! is_admin() || ! $query->is_main_query() ) {
 			return;
 		}
@@ -161,8 +173,9 @@ class Candidature {
 			return;
 		}
 
-		$current_year = date( 'Y' );
-		$filter_year  = isset( $_GET['ceb_filter_year'] ) ? sanitize_text_field( $_GET['ceb_filter_year'] ) : $current_year;
+		$current_year = gmdate( 'Y' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Filtre de vue GET dans l'admin.
+		$filter_year = isset( $_GET['ceb_filter_year'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['ceb_filter_year'] ) ) : $current_year;
 
 		if ( ! empty( $filter_year ) ) {
 			$meta_query = $query->get( 'meta_query' );

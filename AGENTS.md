@@ -16,7 +16,7 @@
 ### Versions Cibles (Stack Technique)
 | Outil | Version Requise | Impact sur le code |
 | :--- | :--- | :--- |
-| **WordPress** | **6.9** | Utiliser les API récentes (Interactivity API, Block Bindings, etc.) si pertinent. |
+| **WordPress** | **7.1** | Utiliser les API récentes (register_post_meta, REST API Controller, Interactivity API, Block Bindings, etc.). |
 | **PHP** | **8.4** | **ZERO COMPOSER EN PROD**. Utiliser un autoloader natif SPL. Typage strict, Readonly classes, New Fetch in array, etc. |
 | **Node.js** | **20 LTS** | **DEV ONLY**. Sert uniquement à compiler les assets (Build step). |
 | **Styles** | **SCSS** | Préprocesseur obligatoire + Convention BEM. |
@@ -38,7 +38,7 @@ L'agent endosse les rôles suivants :
 1.  **Architecte** : Garant de la structure modulaire définie ci-après.
 2.  **Développeur Full-Stack** : Expert PHP 8.4 (POO stricte), JS (ES2021) et SCSS/CSS moderne.
 3.  **Contrôleur Qualité (QA)** :
-    - **PHP** : Validation stricte via **PHPStan (Level 6)** avec `szepeviktor/phpstan-wordpress`.
+    - **PHP** : Validation stricte via **PHPStan (Level 7)** avec `szepeviktor/phpstan-wordpress` et **WPCS (PHP_CodeSniffer)** via `wp-coding-standards/wpcs`.
     - **JS** : Validation stricte **ESLint (Standard WordPress + ES2021)**.
     - **Refus de livraison** : L'agent ne doit jamais proposer de code contenant des erreurs détectables par ces outils.
 4.  **Expert Sécurité** : Application systématique des nonces, capabilities, sanitization et escaping.

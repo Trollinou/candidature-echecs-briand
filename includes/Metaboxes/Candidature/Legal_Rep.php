@@ -1,13 +1,19 @@
 <?php
+/**
+ * Metabox Représentant Légal.
+ *
+ * @package Candidature_Echecs_Briand
+ */
+
 namespace CEB\Metaboxes\Candidature;
 
 /**
- * Metabox : Représentant Légal (Lecture seule)
+ * Metabox : Représentant Légal (Lecture seule).
  */
 class Legal_Rep {
 
 	/**
-	 * Initialisation de la metabox
+	 * Initialisation de la metabox.
 	 *
 	 * @return void
 	 */
@@ -16,14 +22,14 @@ class Legal_Rep {
 	}
 
 	/**
-	 * Ajout de la metabox dans le CPT
+	 * Ajout de la metabox dans le CPT.
 	 *
 	 * @return void
 	 */
-	public function add_box():void {
+	public function add_box(): void {
 		add_meta_box(
 			'ceb_candidature_legal_rep',
-			'2. Représentant légal',
+			__( '2. Représentant légal', 'candidature-echecs-briand' ),
 			[ $this, 'render' ],
 			'ceb_candidature',
 			'normal',
@@ -32,7 +38,7 @@ class Legal_Rep {
 	}
 
 	/**
-	 * Rendu HTML de la metabox (Lecture seule)
+	 * Rendu HTML de la metabox (Lecture seule).
 	 *
 	 * @param \WP_Post $post L'objet Post courant.
 	 * @return void
@@ -59,34 +65,34 @@ class Legal_Rep {
 		$email2   = (string) get_post_meta( $post->ID, '_ceb_legal2_email', true );
 		?>
 		<div class="ceb-metabox-content">
-			<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom . ' ' . $nom ); ?></p>
-			<p style="margin: 4px 0;"><strong>Lien de parenté :</strong> <?php echo esc_html( $lien ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Identité :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $prenom . ' ' . $nom ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Lien de parenté :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $lien ); ?></p>
 
-			<p style="margin: 4px 0;"><strong>Adresse :</strong><br>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Adresse :', 'candidature-echecs-briand' ); ?></strong><br>
 			<?php echo esc_html( $adresse ); ?><br>
 			<?php if ( ! empty( $cplt ) ) : ?>
 				<?php echo esc_html( $cplt ); ?><br>
 			<?php endif; ?>
 			<?php echo esc_html( $cp . ' ' . $ville ); ?></p>
 
-			<p style="margin: 4px 0;"><strong>Téléphone :</strong> <?php echo esc_html( $tel ); ?></p>
-			<p style="margin: 4px 0;"><strong>Courriel :</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Téléphone :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $tel ); ?></p>
+			<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Courriel :', 'candidature-echecs-briand' ); ?></strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></p>
 
 			<?php if ( ! empty( $nom2 ) ) : ?>
 				<hr>
-				<h4 style="margin: 8px 0 4px 0;">Second Représentant Légal</h4>
-				<p style="margin: 4px 0;"><strong>Identité :</strong> <?php echo esc_html( $prenom2 . ' ' . $nom2 ); ?></p>
-				<p style="margin: 4px 0;"><strong>Lien de parenté :</strong> <?php echo esc_html( $lien2 ); ?></p>
+				<h4 style="margin: 8px 0 4px 0;"><?php esc_html_e( 'Second Représentant Légal', 'candidature-echecs-briand' ); ?></h4>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Identité :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $prenom2 . ' ' . $nom2 ); ?></p>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Lien de parenté :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $lien2 ); ?></p>
 
-				<p style="margin: 4px 0;"><strong>Adresse :</strong><br>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Adresse :', 'candidature-echecs-briand' ); ?></strong><br>
 				<?php echo esc_html( $adresse2 ); ?><br>
 				<?php if ( ! empty( $cplt2 ) ) : ?>
 					<?php echo esc_html( $cplt2 ); ?><br>
 				<?php endif; ?>
 				<?php echo esc_html( $cp2 . ' ' . $ville2 ); ?></p>
 
-				<p style="margin: 4px 0;"><strong>Téléphone :</strong> <?php echo esc_html( $tel2 ); ?></p>
-				<p style="margin: 4px 0;"><strong>Courriel :</strong> <a href="mailto:<?php echo esc_attr( $email2 ); ?>"><?php echo esc_html( $email2 ); ?></a></p>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Téléphone :', 'candidature-echecs-briand' ); ?></strong> <?php echo esc_html( $tel2 ); ?></p>
+				<p style="margin: 4px 0;"><strong><?php esc_html_e( 'Courriel :', 'candidature-echecs-briand' ); ?></strong> <a href="mailto:<?php echo esc_attr( $email2 ); ?>"><?php echo esc_html( $email2 ); ?></a></p>
 			<?php endif; ?>
 		</div>
 		<?php

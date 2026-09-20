@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "candidature-echecs-briand/application-form",
+	"version": "1.0.2",
+	"title": "Formulaire Candidature Section Échecs",
+	"category": "widgets",
+	"icon": "welcome-learn-more",
+	"description": "Affiche le formulaire de candidature pour la section sportive échecs du Collège Briand.",
+	"keywords": [ "echecs", "candidature", "formulaire", "college" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "candidature-echecs-briand"
+}

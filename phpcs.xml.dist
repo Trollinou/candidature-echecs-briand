@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<ruleset name="CEB_WordPress_Coding_Standards">
+	<description>Règles de codage WordPress pour Candidature Section Échecs Collège Briand</description>
+
+	<!-- Vérifie tous les fichiers PHP du plugin -->
+	<file>.</file>
+
+	<!-- Exclusions de dossiers -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/includes/lib/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
+
+	<!-- Arguments de ligne de commande par défaut -->
+	<arg name="basepath" value="."/>
+	<arg name="parallel" value="8"/>
+	<arg name="extensions" value="php"/>
+	<arg value="ps"/>
+
+	<!-- Standards WordPress -->
+	<rule ref="WordPress-Core"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="WordPress-Extra"/>
+
+	<!-- Autoriser l'autoloading PSR-4 (PascalCase) sans le préfixe class- -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<!-- Autoriser la syntaxe de tableau court PHP 8+ [] -->
+	<rule ref="Universal.Arrays.DisallowShortArraySyntax">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Configuration Text Domain -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="candidature-echecs-briand"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Configuration Préfixes pour variables globales, fonctions et namespaces -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="ceb"/>
+				<element value="candidature_echecs_briand"/>
+			</property>
+		</properties>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound"/>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound"/>
+	</rule>
+
+	<!-- PHP Compatibility -->
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="testVersion" value="8.4-"/>
+</ruleset>
